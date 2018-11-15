@@ -1,0 +1,1033 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.LoanOrderMapper">
+
+    <resultMap type="com.rongke.model.LoanOrder" id="mLoanOrder" autoMapping="true">
+        <association property="user_id" javaType="com.rongke.model.User" autoMapping="true"/>
+        <association property="param_setting_id" javaType="com.rongke.model.ParamSetting" autoMapping="true"/>
+        <association property="user_coupon_id" javaType="com.rongke.model.UserCoupon" autoMapping="true"/>
+    </resultMap>
+
+
+    <sql id="mColumnsSql">
+        id AS id,
+        user_id AS userId,
+        param_setting_id AS paramSettingId,
+        order_number AS orderNumber,
+        bank_name AS bankName,
+        bank_card_num AS bankCardNum,
+        interest_precent AS interestPrecent,
+        limit_days AS limitDays,
+        borrow_money AS borrowMoney,
+        real_money AS realMoney,
+        interest_money AS interestMoney,
+        place_serve_money AS placeServeMoney,
+        msg_auth_money AS msgAuthMoney,
+        risk_serve_money AS riskServeMoney,
+        risk_plan_money AS riskPlanMoney,
+        wate_money AS wateMoney,
+        save_money AS saveMoney,
+        need_pay_money AS needPayMoney,
+        real_pay_money AS realPayMoney,
+        gmt_datetime AS gmtDatetime,
+        upt_dateime AS uptDateime,
+        pass_time AS passTime,
+        give_time AS giveTime,
+        limit_pay_time AS limitPayTime,
+        overdue_time AS overdueTime,
+        real_pay_time AS realPayTime,
+        user_coupon_id AS userCouponId,
+        overdue_days AS overdueDays,
+        overdue_money AS overdueMoney,
+        allow_days AS allowDays,
+        allow_money AS allowMoney,
+        auditor_id AS auditorId,
+        order_status AS orderStatus,
+        give_status AS giveStatus,
+        pay_status AS payStatus,
+        agreement_url AS agreementUrl,
+        agreement_two_url AS agreementTwoUrl,
+        agreement_third_url AS agreementThirdUrl,
+        interest_precent AS interestPrecent,
+        consult_repayment_money AS consultRepaymentMoney,
+        press_money_man AS pressMoneyMan,
+        extend_type AS extendType
+    </sql>
+
+
+    <select id="selectApplyLoanListNum" parameterType="map" resultType="int">
+        SELECT COUNT(1)  FROM loan_order  WHERE
+        loan_order.order_status=#{orderStatus}
+        <include refid="sqlWhere"/>
+    </select>
+
+
+    <select id="selectApplyLoanList" parameterType="map" resultType="com.rongke.model.LoanOrder">
+        SELECT <include refid="mColumnsSql"/> FROM loan_order  WHERE
+        loan_order.order_status=#{orderStatus}
+        <include refid="sqlWhere"/> ORDER  BY loan_order.gmt_datetime DESC
+        LIMIT ${pageNo},${pageSize}
+    </select>
+
+
+    <select id="selectBlackList" parameterType="map" resultType="com.rongke.model.LoanOrder">
+        SELECT <include refid="mColumnsSql"/> FROM loan_order WHERE
+        loan_order.user_id IN
+        <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        LIMIT ${pageNo},${pageSize}
+    </select>
+
+
+    <select id="selectBlackListNum" parameterType="map" resultType="int">
+        SELECT COUNT(1) FROM loan_order WHERE
+        loan_order.user_id IN
+        <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <sql id="sqlWhere1">
+        <if test="ids!=null">
+            AND loan_order.user_id IN
+            <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="time1!=null and time1!='' and time2!=null and time2!=''">
+            AND loan_order.limit_pay_time between #{time1} and #{time2}
+    </if>
+    </sql>
+
+
+    <select id="selectPeopleSum8" parameterType="map" resultType="double">
+        SELECT COUNT(1)  FROM loan_order  WHERE
+        loan_order.order_status=#{orderStatus}
+        <include refid="sqlWhere1"/>
+    </select>
+
+
+    <select id="selectMoneySum8" parameterType="map" resultType="double">
+        SELECT sum(loan_order.need_pay_money) FROM loan_order  WHERE
+        loan_order.order_status=#{orderStatus}
+        <include refid="sqlWhere1"/>
+    </select>
+
+
+
+
+
+    <select id="selectBadDebtListNum" parameterType="map" resultType="int">
+        SELECT COUNT(1)  FROM loan_order  WHERE
+        loan_order.order_status=#{orderStatus}
+        <include refid="sqlWhere1"/>
+    </select>
+
+
+    <select id="selectBadDebtList" parameterType="map" resultType="com.rongke.model.LoanOrder">
+        SELECT <include refid="mColumnsSql"/> FROM loan_order  WHERE
+        loan_order.order_status=#{orderStatus}
+        <include refid="sqlWhere1"/> ORDER BY loan_order.limit_pay_time DESC
+        LIMIT ${pageNo},${pageSize}
+    </select>
+
+
+
+    <sql id="sqlWhere">
+        <if test="ids!=null">
+            AND loan_order.user_id IN
+            <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="time1!=null and time1!='' and time2!=null and time2!=''">
+            AND loan_order.gmt_datetime between #{time1} and #{time2}
+        </if>
+    </sql>
+
+
+    <sql id="sqlWhere2">
+        <if test="ids!=null">
+            AND loan_order.user_id IN
+            <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="time1!=null and time1!='' and time2!=null and time2!=''">
+            AND loan_order.limit_pay_time between #{time1} and #{time2}
+        </if>
+    </sql>
+
+
+
+    <select id="selectPeopleSum" parameterType="map" resultType="double">
+        SELECT COUNT(loan_order.id) FROM loan_order WHERE
+        loan_order.pay_status=#{payStatus}
+        <include refid="sqlWhere"/>
+
+    </select>
+
+
+    <select id="selectMoneySum" parameterType="map" resultType="double">
+        SELECT sum(loan_order.real_pay_money) FROM loan_order WHERE
+        loan_order.pay_status=#{payStatus}
+        <include refid="sqlWhere"/>
+    </select>
+
+
+    <select id="selectPeopleSum1" parameterType="map" resultType="double">
+        SELECT COUNT(loan_order.id) FROM loan_order WHERE
+        loan_order.order_status=#{orderStatus}
+        <include refid="sqlWhere"/>
+
+    </select>
+
+
+    <select id="selectMoneySum1" parameterType="map" resultType="int">
+        SELECT sum(loan_order.borrow_money) FROM loan_order WHERE
+        loan_order.order_status=#{orderStatus}
+        <include refid="sqlWhere"/>
+    </select>
+
+
+
+    <select id="selectPeopleSum9" parameterType="map" resultType="double">
+        SELECT COUNT(loan_order.id) FROM loan_order WHERE
+        loan_order.order_status=#{orderStatus}
+        <include refid="sqlWhere2"/>
+
+    </select>
+
+
+    <select id="selectMoneySum9" parameterType="map" resultType="double">
+        SELECT sum(loan_order.need_pay_money) FROM loan_order WHERE
+        loan_order.order_status=#{orderStatus}
+        <include refid="sqlWhere2"/>
+    </select>
+
+
+    <select id="selectPeopleSum3" parameterType="map" resultType="string">
+        SELECT COUNT(loan_order.user_id) FROM loan_order WHERE
+        loan_order.user_id IN
+        <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+
+    </select>
+
+
+    <select id="selectMoneySum3" parameterType="map" resultType="string">
+        SELECT sum(loan_order.need_pay_money) FROM loan_order WHERE
+        loan_order.real_pay_money='0' AND loan_order.user_id IN
+        <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+
+    </select>
+
+    <select id="selectPeopleSum2" parameterType="map" resultType="double">
+        SELECT COUNT(loan_order.id) FROM loan_order WHERE 1=1
+        <include refid="sqlStatus"/>
+
+    </select>
+
+
+    <select id="selectMoneySum2" parameterType="map" resultType="double">
+        SELECT sum(loan_order.borrow_money) FROM loan_order WHERE 1=1
+
+        <include refid="sqlStatus"/>
+    </select>
+
+
+
+
+    <select id="selectNormalRepaymentListNum" parameterType="map" resultType="int">
+        SELECT COUNT(1)  FROM loan_order  WHERE
+        loan_order.pay_status=#{payStatus}
+        <include refid="sqlWhere"/>
+    </select>
+
+    <select id="selectNormalRepaymentList" parameterType="map" resultType="com.rongke.model.LoanOrder">
+        SELECT <include refid="mColumnsSql"/> FROM loan_order  WHERE
+        loan_order.pay_status=#{payStatus}
+        <include refid="sqlWhere"/> ORDER BY loan_order.real_pay_time DESC
+        LIMIT ${pageNo},${pageSize}
+    </select>
+    <select id="selectFailToPassMoneyListNum" parameterType="map" resultType="int">
+        SELECT COUNT(1) FROM  loan_order WHERE  loan_order.order_status='2' AND loan_order.give_status='3'
+    </select>
+
+    <select id="selectFailToPassMoneyList" parameterType="map" resultType="com.rongke.model.LoanOrder">
+        SELECT <include refid="mColumnsSql"/> FROM loan_order WHERE
+        loan_order.order_status='2' AND loan_order.give_status='3' ORDER BY loan_order.gmt_datetime DESC
+        LIMIT ${pageNo},${pageSize}
+    </select>
+
+    <select id="selectToPassMoneyListNum" parameterType="map" resultType="int">
+        SELECT COUNT(1) FROM  loan_order WHERE
+        loan_order.order_status=#{orderStatus}
+        <include refid="sqlWhere"/>
+    </select>
+    <select id="selectToPassMoneyList" parameterType="map" resultType="com.rongke.model.LoanOrder">
+        SELECT <include refid="mColumnsSql"/> FROM loan_order WHERE
+        loan_order.order_status=#{orderStatus}
+        <include refid="sqlWhere"/>  ORDER BY loan_order.pass_time DESC
+        LIMIT ${pageNo},${pageSize}
+    </select>
+
+
+    <select id="selectNormalToPayListNum" parameterType="map" resultType="int">
+        SELECT COUNT(1) FROM  loan_order WHERE
+        loan_order.order_status=#{orderStatus}
+        <include refid="sqlWhere2"/>
+    </select>
+    <select id="selectNormalToPayList" parameterType="map" resultType="com.rongke.model.LoanOrder">
+        SELECT <include refid="mColumnsSql"/> FROM loan_order WHERE
+        loan_order.order_status=#{orderStatus}
+        <include refid="sqlWhere2"/> ORDER BY loan_order.limit_pay_time DESC
+        LIMIT ${pageNo},${pageSize}
+    </select>
+
+    <select id="selectFailApplyListNum" parameterType="map" resultType="int">
+        SELECT COUNT(1) FROM  loan_order WHERE
+        loan_order.order_status=#{orderStatus}
+        <include refid="sqlWhere"/>
+    </select>
+
+    <select id="selectFailApplyList" parameterType="map" resultType="com.rongke.model.LoanOrder">
+        SELECT <include refid="mColumnsSql"/> FROM loan_order WHERE
+        loan_order.order_status=#{orderStatus}
+        <include refid="sqlWhere"/>  ORDER  BY loan_order.gmt_datetime DESC
+        LIMIT ${pageNo},${pageSize}
+    </select>
+
+    <select id="selectAllPassMoneyList" parameterType="map" resultType="com.rongke.model.LoanOrder">
+        SELECT <include refid="mColumnsSql"/> FROM loan_order WHERE 1=1
+        <include refid="sqlStatus"/> ORDER  BY loan_order.pass_time DESC
+        LIMIT ${pageNo},${pageSize}
+
+    </select>
+
+    <select id="selectAllPassMoneyListNum" parameterType="map" resultType="int">
+        SELECT COUNT(1) FROM loan_order WHERE 1=1
+        <include refid="sqlStatus"/>
+    </select>
+
+    <select id="selectOverDueList" parameterType="map" resultType="com.rongke.model.LoanOrder">
+        SELECT <include refid="mColumnsSql"/> FROM loan_order WHERE 1=1
+        <include refid="sqlStatus1"/> ORDER BY loan_order.limit_pay_time DESC
+        LIMIT ${pageNo},${pageSize}
+
+    </select>
+
+    <select id="selectOverDueListNum" parameterType="map" resultType="int">
+        SELECT COUNT(1) FROM loan_order WHERE 1=1
+        <include refid="sqlStatus1"/>
+    </select>
+
+
+    <sql id="sqlStatus">
+        <if test="ids!=null">
+            AND loan_order.user_id IN
+            <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="status!=null">
+            And loan_order.order_status IN
+            <foreach collection="status" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="time1!=null and time1!='' and time2!=null and time2!=''">
+            AND loan_order.gmt_datetime between #{time1} and #{time2}
+        </if>
+    </sql>
+
+    <sql id="sqlStatus2">
+        <if test="status1!=null">
+            AND loan_order.order_status IN
+            <foreach collection="status1" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="ids!=null">
+            AND loan_order.user_id IN
+            <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test="time1!=null and time1!='' and time2!=null and time2!=''">
+            AND loan_order.real_pay_time between #{time1} and #{time2}
+        </if>
+    </sql>
+
+    <select id="selectPeopleSum7" parameterType="map" resultType="double">
+        SELECT COUNT(1) FROM loan_order WHERE
+        loan_order.pay_status=#{payStatus}
+        <include refid="sqlStatus2"/>
+
+    </select>
+
+    <select id="selectMoneySum7" parameterType="map" resultType="double">
+        SELECT sum(loan_order.real_pay_money) FROM loan_order WHERE
+        loan_order.pay_status=#{payStatus}
+        <include refid="sqlStatus2"/>
+
+    </select>
+
+
+    <select id="overDuePaymentList" parameterType="map" resultType="com.rongke.model.LoanOrder">
+        SELECT <include refid="mColumnsSql"/> FROM loan_order WHERE
+        loan_order.pay_status=#{payStatus}
+        <include refid="sqlStatus2"/> ORDER BY loan_order.limit_pay_time DESC
+        LIMIT ${pageNo},${pageSize}
+
+    </select>
+
+    <select id="overDuePaymentListNum" parameterType="map" resultType="int">
+        SELECT COUNT(1) FROM loan_order WHERE
+        loan_order.pay_status=#{payStatus}
+        <include refid="sqlStatus2"/>
+    </select>
+
+
+
+
+
+
+    <sql id="sqlStatus1">
+        <if test="ids!=null">
+            AND loan_order.user_id IN
+            <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="status!=null">
+            And loan_order.order_status IN
+            <foreach collection="status" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="time1!=null and time1!='' and time2!=null and time2!=''">
+            AND loan_order.limit_pay_time between #{time1} and #{time2}
+        </if>
+        <if test="pmId != null and pmId != ''">
+            AND loan_order.press_money_man = #{pmId}
+        </if>
+        <if test="auditorId != null and auditorId != ''">
+            AND loan_order.auditor_id = #{auditorId}
+        </if>
+    </sql>
+    <select id="selectPeopleSum6" parameterType="map" resultType="int">
+        SELECT COUNT(loan_order.id) FROM loan_order WHERE 1=1
+        <include refid="sqlStatus1"/>
+
+    </select>
+
+
+    <select id="selectMoneySum6" parameterType="map" resultType="double">
+        SELECT sum(loan_order.borrow_money) FROM loan_order WHERE 1=1
+
+        <include refid="sqlStatus1"/>
+    </select>
+
+
+
+
+    <resultMap id="selectThisOrderMap" type="com.rongke.model.LoanOrder">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="lianRepayNum" column="lian_repay_num"/>
+        <result property="repaymentNo" column="repayment_no"/>
+        <result property="needPayMoney" column="need_pay_money"/>
+        <result property="limitPayTime" column="limit_pay_time"/>
+        <result property="noAgree" column="no_agree"/>
+        <association property="user" javaType="com.rongke.model.User">
+            <result property="gmtDatetime" column="gmt_datetime"/>
+            <result property="phone" column="phone"/>
+            <result property="userName" column="user_name"/>
+            <result property="idNo" column="identity_num"/>
+        </association>
+    </resultMap>
+
+    <select id="selectThisOrder" resultMap="selectThisOrderMap">
+        select
+            loan_order.user_id,loan_order.lian_repay_num,loan_order.repayment_no,
+            loan_order.need_pay_money,loan_order.limit_pay_time,loan_order.no_agree,
+            loan_order.id,`user`.gmt_datetime,`user`.phone,`user`.user_name,`user_identity`.identity_num
+        from loan_order,`user`,user_identity
+        WHERE loan_order.user_id=`user`.id
+        AND user_identity.user_id=`user`.id
+        AND loan_order.order_status in(3,4,5)
+
+    </select>
+
+
+   <select id="sumAllWateMoney" resultType="BigDecimal">
+       SELECT sum(loan_order.wate_money) FROM  loan_order WHERE
+       loan_order.order_status=6
+   </select>
+
+    <select id="selectApplyByTime" parameterType="String"  resultType="com.rongke.model.LoanOrder">
+        SELECT * FROM loan_order WHERE loan_order.gmt_datetime BETWEEN #{startTime} AND #{endTime}
+
+    </select>
+
+    <select id="selectApplyStatus" parameterType="Long" resultType="com.rongke.model.LoanOrder">
+        SELECT  <include refid="mColumnsSql"/> FROM loan_order WHERE user_id = #{id} ORDER BY  gmt_datetime desc;
+    </select>
+
+
+
+
+
+    <resultMap id="loanOrderUserChannelRMap" type="com.rongke.model.LoanOrder">
+        <result property="id" column="id"/>
+        <result property="userId" column="userId"/>
+        <result property="orderNumber" column="orderNumber"/>
+        <result property="needPayMoney" column="needPayMoney"/>
+        <result property="limitPayTime" column="limitPayTime"/>
+        <result property="allowDays" column="allowDays"/>
+        <result property="orderStatus" column="orderStatus"/>
+        <result property="limitDays" column="limitDays"/>
+        <result property="borrowMoney" column="borrowMoney"/>
+        <result property="realMoney" column="realMoney"/>
+        <result property="realPayMoney" column="realPayMoney"/>
+        <result property="gmtDatetime" column="gmtDatetime"/>
+        <result property="channelProfit" column="channelProfit"/>
+        <result property="extendNum" column="extendNum"/>
+        <association property="user" javaType="com.rongke.model.User">
+            <result property="phone" column="phone"/>
+            <result property="userName" column="userName"/>
+            <association property="channel" javaType="com.rongke.model.Channel">
+                <result property="name" column="channelName"/>
+            </association>
+        </association>
+    </resultMap>
+
+    <sql id="loanOrder_user_channel_sql">
+        loan_order.id AS id,
+        user_id AS userId,
+        order_number AS orderNumber,
+        limit_days AS limitDays,
+        borrow_money AS borrowMoney,
+        real_money AS realMoney,
+        need_pay_money AS needPayMoney,
+        real_pay_money AS realPayMoney,
+        loan_order.gmt_datetime AS gmtDatetime,
+        allow_days AS allowDays,
+        extend_num AS extendNum,
+        order_status AS orderStatus,
+        channel_profit AS channelProfit,
+        `user`.phone AS phone,
+        `user`.`user_name` AS userName,
+        `channel`.name AS channelName
+    </sql>
+
+
+    <!--渠道商查询自己会员下的订单-->
+    <select id="channelSelectOrder" resultMap="loanOrderUserChannelRMap" parameterType="map">
+        select
+        <include refid="loanOrder_user_channel_sql"></include>
+        FROM `loan_order`,`user`,`channel`
+        WHERE loan_order.`user_id`=`user`.`id`
+        AND channel.`id`=`user`.`channel_id`
+        AND `loan_order`.order_number IS NOT NULL
+        AND `channel`.`id`=#{channelId}
+        <if test="status!=null and status!=''and status!=-1">
+            <if test="status != 4">
+                AND  loan_order.order_status=#{status}
+            </if>
+            <if test="status == 4">
+                AND  loan_order.order_status IN (4,5)
+            </if>
+        </if>
+        <if test="phone!=null and phone!=''">
+            AND  `user`.`phone` LIKE CONCAT(CONCAT('%',#{phone}),'%')
+        </if>
+        <if test="gmtDatetime!=null and gmtDatetime!=''">
+            AND loan_order.gmt_datetime between #{gmtDatetime1} and #{gmtDatetime2}
+        </if>
+        <if test="channelId!=null and chachannelIdnnelName!=''">
+            AND  `channel`.id=#{channelId}
+        </if>
+        AND `channel`.status = 1
+        GROUP BY `user`.`id`
+        ORDER BY loan_order.gmt_datetime DESC 
+        LIMIT ${pageNo},${pageSize}
+    </select>
+
+
+    <!--渠道商查询自己会员下的订单总数-->
+    <select id="channelSelectLoanOrderTotalAndMoney" resultType="java.util.Map" parameterType="map">
+        SELECT
+        COUNT(1) total,IFNULL(SUM(borrow_money),0) borrowMoney, IFNULL(SUM(channel_profit),0) channelProfit
+        FROM `loan_order`,`user`,`channel`
+        WHERE loan_order.`user_id`=`user`.`id`
+        AND channel.`id`=`user`.`channel_id`
+        AND `channel`.`id`=#{channelId}
+        <if test="status!=null and status!=''and status!=-1">
+            <if test="status != 4">
+                AND  loan_order.order_status=#{status}
+            </if>
+            <if test="status == 4">
+                AND  loan_order.order_status IN (4,5)
+            </if>
+        </if>
+        <if test="phone!=null and phone!=''">
+            AND  `user`.`phone` LIKE CONCAT(CONCAT('%',#{phone}),'%')
+        </if>
+        <if test="channelId!=null and chachannelIdnnelName!=''">
+            AND  `channel`.id=#{channelId}
+        </if>
+        <if test="gmtDatetime!=null and gmtDatetime!=''">
+            AND loan_order.gmt_datetime between #{gmtDatetime1} and #{gmtDatetime2}
+        </if>
+        AND `channel`.status = 1
+    </select>
+
+
+    <!--时间删选渠道商会员订单-->
+    <select id="orderListChannel" parameterType="java.util.Map" resultType="string">
+        SELECT loan_order.`give_time` giveTime,loan_order.`real_money` realMoney,loan_order.`real_pay_time` realPayTime,loan_order.`real_pay_money` realPayMoney,loan_order.`channel_profit` channelProfit
+        FROM `channel`,`user`,`loan_order`
+        WHERE channel.`id`=`user`.`channel_id`
+        AND loan_order.`user_id`=`user`.`id`
+        AND channel.`login_name`=#{channelName}
+        <if test="giveTime!=null and giveTime!=''">
+            AND  loan_order.give_time LIKE CONCAT(CONCAT('%',#{giveTime}),'%')
+        </if>
+        <if test="realPayTime!=null and realPayTime!=''">
+            AND  loan_order.real_pay_time LIKE CONCAT(CONCAT('%',#{realPayTime}),'%')
+        </if>
+    </select>
+
+
+    <!--各管理员查询订单-->
+    <select id="adminSelectLoanOrder" parameterType="java.util.Map" resultMap="loanOrderUserChannelRMap">
+        select
+        <include refid="loanOrder_user_channel_sql"></include>
+        FROM `loan_order`,`user`,`channel`
+        WHERE loan_order.`user_id`=`user`.`id`
+        AND channel.`id`=`user`.`channel_id`
+        AND `loan_order`.order_number IS NOT NULL
+        <if test="status!=null and status!=''and status!=-1">
+            <if test="status != 4">
+                AND  loan_order.order_status=#{status}
+            </if>
+            <if test="status == 4">
+                AND  loan_order.order_status IN (4,5)
+            </if>
+        </if>
+        <if test="phone!=null and phone!=''">
+            AND  `user`.`phone` LIKE CONCAT(CONCAT('%',#{phone}),'%')
+        </if>
+        <if test="gmtDatetime!=null and gmtDatetime!=''">
+            AND  loan_order.gmt_datetime LIKE CONCAT(CONCAT('%',#{gmtDatetime}),'%')
+        </if>
+        <if test="channelName!=null and channelName!=''">
+            AND  `channel`.name LIKE CONCAT(CONCAT('%',#{channelName}),'%')
+        </if>
+        AND `channel`.status = 1
+        LIMIT ${pageNo},${pageSize}
+    </select>
+
+    <!--各管理员查询订单总数,总放款额，总分成利润-->
+    <select id="adminSelectLoanOrderTotalAndMoney" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        COUNT(1) total,IFNULL(SUM(borrow_money),0) borrowMoney, IFNULL(SUM(channel_profit),0) channelProfit
+        FROM `loan_order`,`user`,channel
+        WHERE loan_order.`user_id`=`user`.`id`
+        AND channel.`id`=`user`.`channel_id`
+        AND `loan_order`.order_number IS NOT NULL
+        <if test="status!=null and status!=''and status!=-1">
+            <if test="status != 4">
+                AND  loan_order.order_status=#{status}
+            </if>
+            <if test="status == 4">
+                AND  loan_order.order_status IN (4,5)
+            </if>
+        </if>
+        <if test="phone!=null and phone!=''">
+            AND  `user`.`phone` LIKE CONCAT(CONCAT('%',#{phone}),'%')
+        </if>
+        <if test="gmtDatetime!=null and gmtDatetime!=''">
+            AND  loan_order.gmt_datetime LIKE CONCAT(CONCAT('%',#{gmtDatetime}),'%')
+        </if>
+        <if test="channelName!=null and channelName!=''">
+            AND  `channel`.name LIKE CONCAT(CONCAT('%',#{channelName}),'%')
+        </if>
+        AND `channel`.status = 1
+    </select>
+
+
+
+    <sql id="loanOrder_user_sql">
+        below_part_payment AS belowPartPayment,
+        loan_order.auto_payment_money AS autoPaymentMoney,
+        loan_order.lian_repay_num AS lianRepayNum,
+        loan_order.overdue_time AS overdueTime,
+        loan_order.id AS id,
+        user_id AS userId,
+        order_number AS orderNumber,
+        limit_days AS limitDays,
+        borrow_money AS borrowMoney,
+        real_money AS realMoney,
+        need_pay_money AS needPayMoney,
+        real_pay_money AS realPayMoney,
+        loan_order.gmt_datetime AS gmtDatetime,
+        allow_days AS allowDays,
+        extend_num AS extendNum,
+        order_status AS orderStatus,
+        overdue_days AS overdueDays,
+        give_time AS giveTime,
+        limit_pay_time AS limitPayTime,
+        lian_pay_num AS  lianPayNum,
+        real_pay_time AS realPayTime,
+        overdue_money AS overdueMoney,
+        give_status AS giveStatus,
+        loan_order.td_score AS tdScore,
+        loan_order.press_times AS pressTimes,
+        loan_order.last_press_date AS lastPressDate,
+        `user`.phone AS phone,
+        `user`.is_old AS isOld,
+        `user`.`user_name` AS userName,
+        bank_card_num AS bankCardNum,
+        press_money_man AS pressMoneyMan,
+        extend_type AS extendType,
+        pay_status as payStatus
+    </sql>
+
+
+    <resultMap id="loanOrderUserRMap" type="com.rongke.model.LoanOrder">
+        <result property="belowPartPayment" column="belowPartPayment"/>
+        <result property="autoPaymentMoney" column="autoPaymentMoney"/>
+        <result property="lianRepayNum" column="lianRepayNum"/>
+        <result property="overdueTime" column="overdueTime"/>
+        <result property="id" column="id"/>
+        <result property="userId" column="userId"/>
+        <result property="orderNumber" column="orderNumber"/>
+        <result property="needPayMoney" column="needPayMoney"/>
+        <result property="limitPayTime" column="limitPayTime"/>
+        <result property="allowDays" column="allowDays"/>
+        <result property="orderStatus" column="orderStatus"/>
+        <result property="limitDays" column="limitDays"/>
+        <result property="borrowMoney" column="borrowMoney"/>
+        <result property="realMoney" column="realMoney"/>
+        <result property="realPayMoney" column="realPayMoney"/>
+        <result property="gmtDatetime" column="gmtDatetime"/>
+        <result property="overdueDays" column="overdueDays"/>
+        <result property="overdueMoney" column="overdueMoney"/>
+        <result property="extendNum" column="extendNum"/>
+        <result property="giveTime" column="giveTime"/>
+        <result property="lianPayNum" column="lianPayNum"/>
+        <result property="limitPayTime" column="limitPayTime"/>
+        <result property="realPayTime" column="realPayTime"/>
+        <result property="bankCardNum" column="bankCardNum"/>
+        <result property="pressTimes" column="pressTimes"/>
+        <result property="tdScore" column="tdScore"/>
+        <result property="lastPressDate" column="lastPressDate"/>
+        <result property="pressMoneyMan" column="pressMoneyMan"/>
+        <result property="giveStatus" column="giveStatus"/>
+        <result property="extendType" column="extendType"/>
+        <result property="payStatus" column="payStatus"/>
+        <association property="user" javaType="com.rongke.model.User">
+            <result property="phone" column="phone"/>
+            <result property="userName" column="userName"/>
+            <result property="isOld" column="isOld"/>
+        </association>
+    </resultMap>
+
+
+    <!--后台查询订单-->
+    <select id="userSelectLoanOrder" parameterType="java.util.Map" resultMap="loanOrderUserRMap">
+        select
+        <include refid="loanOrder_user_sql"></include>
+        FROM `loan_order`,`user`
+        WHERE loan_order.`user_id`=`user`.`id`
+        AND `loan_order`.order_number IS NOT NULL
+        <if test="giveStatus != null and giveStatus != ''">
+            AND  loan_order.give_status=#{giveStatus}
+        </if>
+        <if test="status!=null and status!=''and status!=-1">
+            <if test="status != -2 and status != -3">
+                AND  loan_order.order_status=#{status}
+            </if>
+            <if test="status == -3">
+                AND  loan_order.order_status IN (3,5,6,8)
+            </if>
+            <if test="status == -2">
+                AND  loan_order.order_status IN (4,5)
+            </if>
+        </if>
+        <if test="phone!=null and phone!=''">
+            AND  `user`.`phone` LIKE CONCAT(CONCAT('%',#{phone}),'%')
+        </if>
+        <if test="name!=null and name!=''">
+            AND  `user`.`user_name` LIKE CONCAT(CONCAT('%',#{name}),'%')
+        </if>
+        <if test="userId!=null and userId!=''">
+            AND  `user_id` =#{userId}
+        </if>
+        <if test="payStatus!=null and payStatus!=''">
+            AND  loan_order.pay_status=#{payStatus}
+            <if test="extendSign == 2">
+            and loan_order.id in (select order_extend.order_id from order_extend where order_extend.`status` = 1 )
+            </if>
+            <if test="extendSign == 1">
+                and loan_order.id not in (select order_extend.order_id from order_extend where order_extend.`status` = 1 )
+            </if>
+        </if>
+        <if test="renewalStatus!=null and renewalStatus!='' and renewalStatus!=-1">
+            AND  loan_order.renewal_status=#{renewalStatus}
+        </if>
+        <if test="moneyBackStatus!=null and moneyBackStatus!='' and moneyBackStatus!=-1">
+            AND  loan_order.money_back_status=#{moneyBackStatus}
+        </if>
+        <if test="gmtDatetime !=null and gmtDatetime!=''">
+            AND loan_order.gmt_datetime between #{gmtDatetime1} and #{gmtDatetime2}
+        </if>
+        <if test="realPayTime !=null and realPayTime!=''">
+            AND loan_order.real_pay_time between #{realPayTime1} and #{realPayTime2}
+        </if>
+        <if test="limitPayTime !=null and limitPayTime!=''">
+            AND loan_order.limit_pay_time between #{limitPayTime1} and #{limitPayTime2}
+        </if>
+        <!--<if test="status != -2 and status != -3">-->
+            <!--ORDER BY loan_order.`gmt_datetime` DESC-->
+        <!--</if>-->
+        <!--<if test="status == -2 or status == -3">-->
+            <!--ORDER BY loan_order.`limit_pay_time` DESC-->
+        <!--</if>-->
+
+
+        <if test="orderByDate !=null and orderByDate==1">
+            ORDER BY loan_order.`gmt_datetime` DESC
+        </if>
+        <if test="orderByDate !=null and orderByDate==2">
+            ORDER BY loan_order.`limit_pay_time` DESC
+        </if>
+
+        LIMIT ${pageNo},${pageSize}
+    </select>
+
+
+    <!--后台查询订单总数,总放款额，总分成利润-->
+    <select id="userSelectLoanOrderTotalAndMoney" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        COUNT(1) total,IFNULL(SUM(need_pay_money),0) borrowMoney,IFNULL(SUM(real_pay_money),0) realPayMoney,IFNULL(SUM(borrow_money),0) principalMoney
+        FROM `loan_order`,`user`
+        WHERE loan_order.`user_id`=`user`.`id`
+        AND `loan_order`.order_number IS NOT NULL
+        <if test="giveStatus != null and giveStatus != ''">
+            AND  loan_order.give_status=#{giveStatus}
+        </if>
+        <if test="status!=null and status!=''and status!=-1">
+            <if test="status != -2 and status != -3">
+                AND  loan_order.order_status=#{status}
+            </if>
+            <if test="status == -3">
+                AND  loan_order.order_status IN (3,5,6,8)
+            </if>
+            <if test="status == -2">
+                AND  loan_order.order_status IN (4,5)
+            </if>
+        </if>
+        <if test="phone!=null and phone!=''">
+            AND  `user`.`phone` LIKE CONCAT(CONCAT('%',#{phone}),'%')
+        </if>
+        <if test="name!=null and name!=''">
+            AND  `user`.`user_name` LIKE CONCAT(CONCAT('%',#{name}),'%')
+        </if>
+        <if test="payStatus!=null and payStatus!=''">
+            AND  loan_order.pay_status=#{payStatus}
+            <if test="extendSign == 2">
+                and loan_order.id in (select order_extend.order_id from order_extend where order_extend.`status` = 1 )
+            </if>
+            <if test="extendSign == 1">
+                and loan_order.id not in (select order_extend.order_id from order_extend where order_extend.`status` = 1 )
+            </if>
+        </if>
+        <if test="renewalStatus!=null and renewalStatus!='' and renewalStatus!=-1">
+            AND  loan_order.renewal_status=#{renewalStatus}
+        </if>
+        <if test="moneyBackStatus!=null and moneyBackStatus!='' and moneyBackStatus!=-1">
+            AND  loan_order.money_back_status=#{moneyBackStatus}
+        </if>
+        <if test="gmtDatetime !=null and gmtDatetime!=''">
+            AND loan_order.gmt_datetime between #{gmtDatetime1} and #{gmtDatetime2}
+        </if>
+        <if test="realPayTime !=null and realPayTime!=''">
+            AND loan_order.real_pay_time between #{realPayTime1} and #{realPayTime2}
+        </if>
+        <if test="limitPayTime !=null and limitPayTime!=''">
+            AND loan_order.limit_pay_time between #{limitPayTime1} and #{limitPayTime2}
+        </if>
+    </select>
+
+
+    <select id="selectPassingList" parameterType="map" resultMap="passingResult">
+      SELECT <include refid="mColumnsSqlPassing"/> from loan_order,user where
+        loan_order.user_id=user.id AND loan_order.order_status=9
+        <if test="userName !=null and userName!=''">
+            AND user.user_name=#{userName}
+        </if>
+        <if test="phone!=null and phone!=''">
+            AND user.phone=#{phone}
+        </if>
+        ORDER BY loan_order.`give_time` DESC
+        LIMIT ${pageNo},${pageSize}
+
+
+    </select>
+
+    <select id="selectPassingNum" parameterType="map" resultType="int">
+        SELECT sum(1) from loan_order,user where
+        loan_order.user_id=user.id AND loan_order.order_status=9
+        <if test="userName !=null and userName!=''">
+            AND user.user_name=#{userName}
+        </if>
+        <if test="phone!=null and phone!=''">
+            AND user.phone=#{phone}
+        </if>
+
+    </select>
+
+
+
+
+
+    <sql id="mColumnsSqlPassing">
+        loan_order.id AS id,
+        loan_order.user_id AS userId,
+        loan_order.order_number AS orderNumber,
+        loan_order.limit_days AS limitDays,
+        loan_order.borrow_money AS borrowMoney,
+        loan_order.real_money AS realMoney,
+        loan_order.need_pay_money AS needPayMoney,
+        loan_order.give_time AS giveTime,
+        loan_order.limit_pay_time AS limitPayTime,
+        user.user_name AS userName,
+        user.phone AS phone
+    </sql>
+    <resultMap id="passingResult" type="com.rongke.model.LoanOrder">
+        <id column="id" property="id"/>
+        <result column="userId" property="userId"/>
+        <result column="orderNumber" property="orderNumber"/>
+        <result column="limitDays" property="limitDays"/>
+        <result column="borrowMoney" property="borrowMoney"/>
+        <result column="realMoney" property="realMoney"/>
+        <result column="needPayMoney" property="needPayMoney"/>
+        <result column="giveTime" property="giveTime"/>
+        <result column="limitPayTime" property="limitPayTime"/>
+        <association property="user" javaType="com.rongke.model.User">
+            <id column="id" property="id" />
+            <result column="userName" property="userName"/>
+            <result column="phone" property="phone"/>
+        </association>
+    </resultMap>
+    
+    <select id="selectMyAllPassingOrders" parameterType="map" resultMap="loanOrderUserRMap">
+        SELECT <include refid="loanOrder_user_sql"/> FROM loan_order,user where
+        user.id=loan_order.user_id AND
+        order_status IN (3,5)
+        <if test="orderId!=null and orderId!=''">
+            AND loan_order.id=#{orderId}
+        </if>
+        <if test="allocationStatus!=null and allocationStatus!='' and allocationStatus==0">
+            AND loan_order.press_money_man is NULL
+        </if>
+        <if test="allocationStatus!=null and allocationStatus!='' and allocationStatus==1">
+            AND loan_order.press_money_man is NOT NULL
+        </if>
+        <if test="gmtDatetime!=null and gmtDatetime!=''">
+            AND loan_order.limit_pay_time BETWEEN #{time1} AND  #{time2}
+        </if>
+        <if test="overDueDays!=null and overDueDays!=''">
+            AND loan_order.overdue_days>#{overDueDays}
+        </if>
+        <if test="name!=null and name!=''">
+            AND user.user_name=#{name}
+        </if>
+        <if test="phone!=null and phone!=''">
+            AND user.phone=#{phone}
+        </if>
+        AND  #{beginPressDate}>loan_order.limit_pay_time
+        ORDER BY loan_order.limit_pay_time DESC
+
+        LIMIT ${pageNo},${pageSize}
+
+
+
+
+
+    </select>
+
+
+
+    <select id="selectMyAllPassingOrdersNum" parameterType="map" resultType="map">
+        SELECT COUNT(1) count,sum(loan_order.need_pay_money) totalMoney FROM loan_order,user where
+        user.id=loan_order.user_id AND
+        order_status IN (3,5)
+        <if test="orderId!=null and orderId!=''">
+            AND loan_order.id=#{orderId}
+        </if>
+        <if test="allocationStatus!=null and allocationStatus!='' and allocationStatus==0">
+            AND loan_order.press_money_man is NULL
+        </if>
+        <if test="allocationStatus!=null and allocationStatus!='' and allocationStatus==1">
+            AND loan_order.press_money_man is NOT NULL
+        </if>
+        <if test="gmtDatetime!=null and gmtDatetime!=''">
+            AND loan_order.limit_pay_time BETWEEN #{time1} AND  #{time2}
+        </if>
+        <if test="overDueDays!=null and overDueDays!=''">
+            AND loan_order.overdue_days>#{overDueDays}
+        </if>
+        <if test="name!=null and name!=''">
+            AND user.user_name=#{name}
+        </if>
+        <if test="phone!=null and phone!=''">
+            AND user.phone=#{phone}
+        </if>
+        AND  #{beginPressDate}>loan_order.limit_pay_time
+    </select>
+    
+    
+    
+    <select id="selectAllOrders" resultType="com.rongke.model.LoanOrder">
+      SELECT <include refid="mColumnsSql"/> from loan_order where order_status IN (3,4,5)
+    </select>
+
+    <select id="selectByOrderStatus" parameterType="int" resultType="com.rongke.model.LoanOrder">
+        SELECT <include refid="mColumnsSql"/> from loan_order where order_status = #{orderStatus}
+    </select>
+
+
+    <select id="selectPassLoanUserCount"  resultType="int">
+        select u.id
+        from `user` u join loan_order lo
+        where
+        lo.pass_time is not null
+        and u.id =lo.user_id
+        GROUP BY user_id ;
+    </select>
+
+
+    <select id="selectExpireOrderForExpireDate"  resultType="com.rongke.model.LoanOrder" >
+        select <include refid="mColumnsSql"/>
+        from loan_order
+        WHERE  loan_order.overdue_days IN
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and loan_order.order_status = '5'
+    </select>
+
+    <select id="getOverdueCount"  resultType="int" parameterType="long" >
+       select count(1) from loan_order where user_id=#{userId} and pay_status=2
+    </select>
+</mapper>

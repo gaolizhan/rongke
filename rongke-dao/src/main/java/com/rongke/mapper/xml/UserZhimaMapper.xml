@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.UserZhimaMapper">
+
+
+    <resultMap type="com.rongke.model.UserZhima" id="rmUserZhima">
+        <id property="id" column="id" />
+        <result property="userId" column="userId"/>
+        <result property="openId" column="openId"/>
+        <result property="score" column="score"/>
+        <result property="addtime" column="addtime"/>
+        <result property="updtime" column="updtime"/>
+        <result property="transactionId" column="transactionId"/>
+    </resultMap>
+
+    <resultMap type="com.rongke.model.UserZhima" id="mUserZhima">
+        <id property="id" column="UserZhima_id" />
+        <result property="userId" column="UserZhima_userId"/>
+        <result property="openId" column="UserZhima_openId"/>
+        <result property="score" column="UserZhima_score"/>
+        <result property="addtime" column="UserZhima_addtime"/>
+        <result property="updtime" column="UserZhima_updtime"/>
+        <result property="transactionId" column="UserZhima_transactionId"/>
+    </resultMap>
+
+    <sql id="mUserZhimaPkSql">
+        user_zhima.id AS UserZhima_id,
+        user_zhima.user_id AS UserZhima_userId,
+        user_zhima.open_id AS UserZhima_openId,
+        user_zhima.score AS UserZhima_score,
+        user_zhima.addtime AS UserZhima_addtime,
+        user_zhima.updtime AS UserZhima_updtime
+    </sql>
+
+    <sql id="mUserZhimaSql">
+        id AS id,
+        user_id AS userId,
+        open_id AS openId,
+        score AS score,
+        addtime AS addtime,
+        updtime AS updtime
+    </sql>
+
+
+    <select id="zhimaList" resultType="java.util.HashMap">
+        SELECT
+        z.*,
+        i.user_name AS userName,
+        i.identity_num AS idCard
+        FROM  user_zhima z
+        LEFT JOIN user_identity i ON i.user_id = z.user_id
+        <where>
+            <if test="userName != null and userName !=''">
+                i.user_name = #{userName}
+            </if>
+            <if test="idCard != null and idCard !=''">
+                i.identity_num = #{idCard}
+            </if>
+            <if test="score != null and score !=''">
+                z.score &gt;= #{score}
+            </if>
+        </where>
+        ORDER BY gmt_datetime DESC
+    </select>
+
+
+
+
+
+    </mapper>

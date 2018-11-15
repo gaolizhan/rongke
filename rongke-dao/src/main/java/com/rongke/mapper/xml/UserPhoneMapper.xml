@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.UserPhoneMapper">
+
+    <resultMap type="com.rongke.model.UserPhone" id="mUserPhone" autoMapping="true">
+        <association property="user_id" javaType="com.rongke.model.User" autoMapping="true"/>
+    </resultMap>
+
+    <resultMap id="selectByPageResultMap" type="com.rongke.model.UserPhone">
+        <result property="id" column="id"/>
+        <result property="phone" column="phone"/>
+        <result property="status" column="status"/>
+        <result property="billStatus" column="bill_status"/>
+        <result property="reportStatus" column="report_status"/>
+        <result property="gmtDatetime" column="gmt_datetime"/>
+        <result property="uptDatetime" column="upt_datetime"/>
+        <result property="taskId" column="task_id"/>
+        <result property="message" column="message"/>
+        <association property="user" javaType="com.rongke.model.User">
+            <id property="id" column="user_id"/>
+            <result property="userName" column="user_name"/>
+            <result property="phone" column="phone1"/>
+        </association>
+    </resultMap>
+
+
+    <select id="selectByPage" resultType="java.util.Map" resultMap="selectByPageResultMap">
+        SELECT `user`.`user_name`,`user`.`phone` phone1
+        ,`user_phone`.id,`user_phone`.user_id,`user_phone`.phone,`user_phone`.gmt_datetime,`user_phone`.upt_datetime,`user_phone`.task_id,`user_phone`.status,`user_phone`.bill_status,`user_phone`.report_status
+        FROM `user`,`user_phone`
+        WHERE `user`.`id`=`user_phone`.user_id
+        <if test="phone != null and phone != ''">
+            AND `user`.`phone` LIKE CONCAT(CONCAT('%',#{phone}),'%')
+        </if>
+        <if test="realName != null and realName != ''">
+            AND `user`.`user_name` LIKE CONCAT(CONCAT('%',#{realName}),'%')
+        </if>
+        <if test="status != null and status != -1">
+            AND user_phone.status = #{status}
+        </if>
+        ORDER BY user_phone.gmt_datetime DESC
+        LIMIT ${pageNo},${pageSize}
+    </select>
+
+    <select id="selectCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM `user_phone`,`user`
+        WHERE user_phone.`user_id`=`user`.`id`
+        <if test="phone != null and phone != ''">
+            AND `user`.`phone` LIKE CONCAT(CONCAT('%',#{phone}),'%')
+        </if>
+        <if test="realName != null and realName != ''">
+            AND `user`.`user_name` LIKE CONCAT(CONCAT('%',#{realName}),'%')
+        </if>
+        <if test="status != null and status != -1">
+            AND user_phone.status = #{status}
+        </if>
+    </select>
+
+    <sql id="mColumnsSql">
+        id AS id,
+        user_id AS userId,
+        phone AS phone,
+        status AS status,
+        gmt_datetime AS gmtDatetime,
+        upt_datetime AS uptDatetime
+    </sql>
+</mapper>

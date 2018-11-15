@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.UserLoginLogMapper">
+
+    <resultMap type="com.rongke.model.UserLoginLog" id="mUserLoginLog" autoMapping="true">
+        <association property="user_id" javaType="com.rongke.model.User" autoMapping="true" />
+    </resultMap>
+
+    <sql id="mColumnsSql">
+        id AS id,
+        user_id AS userId,
+        login_time AS loginTime,
+        lng AS lng,
+        lat AS lat,
+        address_details AS addressDetails
+    </sql>
+
+    <select id="selectList1" parameterType="map" resultType="com.rongke.model.UserLoginLog">
+        SELECT <include refid="mColumnsSql"/> FROM  user_login_log WHERE 1=1
+        <include refid="sqlwhere"/>
+        ORDER BY  user_login_log.login_time DESC
+        LIMIT ${pageNo},${pageSize}
+    </select>
+
+    <select id="selectNum1" parameterType="map" resultType="int">
+        SELECT COUNT(1) FROM  user_login_log WHERE 1=1
+        <include refid="sqlwhere"/>
+    </select>
+
+<sql id="sqlwhere">
+    <if test="userId!=null and userId!=''">
+        AND user_login_log.user_id=#{userId}</if>
+
+</sql>
+
+
+</mapper>

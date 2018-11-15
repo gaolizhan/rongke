@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.rongke.mapper.UserRiskRuleMapper" >
+  <resultMap id="BaseResultMap" type="com.rongke.model.UserRiskRule" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="rule_group" property="ruleGroup" jdbcType="VARCHAR" />
+    <result column="rule_param" property="ruleParam" jdbcType="INTEGER" />
+    <result column="coerce_sign" property="coerceSign" jdbcType="BIT" />
+    <result column="describe" property="describe" jdbcType="VARCHAR" />
+    <result column="judge_sign" property="judgeSign" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, rule_group, rule_param, coerce_sign, describe, judge_sign
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_risk_rule
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from user_risk_rule
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.rongke.model.UserRiskRule" >
+    insert into user_risk_rule (id, rule_group, rule_param, 
+      coerce_sign, describe, judge_sign
+      )
+    values (#{id,jdbcType=VARCHAR}, #{ruleGroup,jdbcType=VARCHAR}, #{ruleParam,jdbcType=INTEGER}, 
+      #{coerceSign,jdbcType=BIT}, #{describe,jdbcType=VARCHAR}, #{judgeSign,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.rongke.model.UserRiskRule" >
+    insert into user_risk_rule
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="ruleGroup != null" >
+        rule_group,
+      </if>
+      <if test="ruleParam != null" >
+        rule_param,
+      </if>
+      <if test="coerceSign != null" >
+        coerce_sign,
+      </if>
+      <if test="describe != null" >
+        describe,
+      </if>
+      <if test="judgeSign != null" >
+        judge_sign,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleGroup != null" >
+        #{ruleGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleParam != null" >
+        #{ruleParam,jdbcType=INTEGER},
+      </if>
+      <if test="coerceSign != null" >
+        #{coerceSign,jdbcType=BIT},
+      </if>
+      <if test="describe != null" >
+        #{describe,jdbcType=VARCHAR},
+      </if>
+      <if test="judgeSign != null" >
+        #{judgeSign,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.rongke.model.UserRiskRule" >
+    update user_risk_rule
+    <set >
+      <if test="ruleGroup != null" >
+        rule_group = #{ruleGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleParam != null" >
+        rule_param = #{ruleParam,jdbcType=INTEGER},
+      </if>
+      <if test="coerceSign != null" >
+        coerce_sign = #{coerceSign,jdbcType=BIT},
+      </if>
+      <if test="describe != null" >
+        describe = #{describe,jdbcType=VARCHAR},
+      </if>
+      <if test="judgeSign != null" >
+        judge_sign = #{judgeSign,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.rongke.model.UserRiskRule" >
+    update user_risk_rule
+    set rule_group = #{ruleGroup,jdbcType=VARCHAR},
+      rule_param = #{ruleParam,jdbcType=INTEGER},
+      coerce_sign = #{coerceSign,jdbcType=BIT},
+      describe = #{describe,jdbcType=VARCHAR},
+      judge_sign = #{judgeSign,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

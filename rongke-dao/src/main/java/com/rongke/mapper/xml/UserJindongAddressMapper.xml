@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.UserJindongAddressMapper">
+
+    <resultMap type="com.rongke.model.UserJindongAddress" id="mUserJindongAddress" autoMapping="true">
+    </resultMap>
+
+    <resultMap id="selectByPageResultMap" type="com.rongke.model.UserJindongAddress">
+        <result property="id" column="id"/>
+        <result property="address" column="address"/>
+        <result property="gmtDatetime" column="gmt_datetime"/>
+        <result property="uptDatetime" column="upt_datetime"/>
+        <association property="user" javaType="com.rongke.model.User">
+            <id property="id" column="user_id"/>
+            <result property="userName" column="user_name"/>
+            <result property="phone" column="phone"/>
+        </association>
+    </resultMap>
+
+
+    <select id="selectUser" parameterType="java.util.Map" resultType="com.rongke.model.User">
+        SELECT `user`.id id,`user`.user_name userName,`user`.phone phone
+        FROM
+        `user_jindong_address`,`user`
+        WHERE user_jindong_address.`user_id`=`user`.`id`
+        <if test="phone != null and phone != ''">
+            AND  `user`.`phone` LIKE CONCAT(CONCAT('%',#{phone}),'%')
+        </if>
+        <if test="realName != null and realName != ''">
+            AND  `user`.`user_name` LIKE CONCAT(CONCAT('%',#{realName}),'%')
+        </if>
+        GROUP BY user_jindong_address.`user_id` ORDER BY user_jindong_address.gmt_datetime DESC
+        LIMIT ${pageNo},${pageSize}
+    </select>
+
+    <select id="selectCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        count(DISTINCT(user_jindong_address.`user_id`))
+        FROM `user_jindong_address`,`user`
+        WHERE user_jindong_address.`user_id`=`user`.`id`
+        <if test="phone != null and phone != ''">
+            AND  `user`.`phone` LIKE CONCAT(CONCAT('%',#{phone}),'%')
+        </if>
+        <if test="realName != null and realName != ''">
+            AND  `user`.`user_name` LIKE CONCAT(CONCAT('%',#{realName}),'%')
+        </if>
+    </select>
+
+
+    <sql id="mColumnsSql">
+        id AS id,
+        user_id AS userId,
+        order_address AS orderAddress,
+        gmt_datetime AS gmtDatetime,
+        upt_datetime AS uptDatetime
+    </sql>
+</mapper>

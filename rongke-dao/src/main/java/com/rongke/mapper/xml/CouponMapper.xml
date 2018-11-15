@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.CouponMapper">
+
+    <resultMap type="com.rongke.model.Coupon" id="mCoupon" autoMapping="true">
+    </resultMap>
+
+    <sql id="mColumnsSql">
+        id AS id,
+        gmt_datetime AS gmtDatetime,
+        upt_datetime AS uptDatetime,
+        save_money AS saveMoney,
+        limit_time AS limitTime,
+        get_limit AS getLimit,
+        all_mount AS allMount,
+        use_mount AS useMount,
+        get_mount AS getMount,
+        coupon_status AS couponStatus,
+        coupou_name AS coupouName
+    </sql>
+
+
+    <update id="updateAllCount">
+        UPDATE `user` SET `user`.`coupon_all_count` = (`user`.`coupon_all_count`+1)
+    </update>
+
+</mapper>

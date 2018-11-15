@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.LoginRecordMapper">
+
+    <resultMap type="com.rongke.model.LoginRecord" id="mLoginRecord" autoMapping="true">
+    </resultMap>
+
+    <sql id="mColumnsSql">
+        id AS id,
+        user_name AS userName,
+        ip AS ip,
+        login_time AS loginTime,
+        phone AS phone,
+        app_version AS appVersion,
+        type AS type
+    </sql>
+</mapper>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.UserMapper">
+
+    <resultMap type="com.rongke.model.User" id="mUser" autoMapping="true">
+        <id property="id" column="User_id"/>
+        <result property="gmtDatetime" column="User_gmtDatetime"/>
+        <result property="uptDatetime" column="User_uptDatetime"/>
+        <result property="userName" column="User_userName"/>
+        <result property="password" column="User_password"/>
+        <result property="headImg" column="User_headImg"/>
+        <result property="phone" column="User_phone"/>
+        <result property="token" column="User_token"/>
+        <result property="uuid" column="User_uuid"/>
+        <result property="money" column="User_money"/>
+        <result property="userType" column="User_userType"/>
+        <result property="authStatus" column="User_authStatus"/>
+        <result property="status" column="User_status"/>
+        <result property="token" column="User_token"/>
+        <result property="status" column="User_status"/>
+        <result property="payPwd" column="User_payPwd"/>
+        <result property="phoneSign" column="User_phoneSign"/>
+        <result property="isPay" column="User_isPay"/>
+        <result property="couponAllCount" column="User_couponAllCount"/>
+        <result property="couponUseCount" column="User_couponUseCount"/>
+        <result property="couponPastCount" column="User_couponPastCount"/>
+        <result property="bankauthNum" column="User_bankauthNum"/>
+        <result property="isOld" column="User_isOld"/>
+    </resultMap>
+
+    <sql id="mUserSql">
+        id AS id,
+        gmt_datetime AS gmtDatetime,
+        upt_datetime AS uptDatetime,
+        uuid AS uuid,
+        user_name AS userName,
+        password AS password,
+        head_img AS headImg,
+        phone AS phone,
+        money AS money,
+        user_type AS userType,
+        auth_status AS authStatus,
+        token AS token,
+        status AS status,
+        pay_pwd AS payPwd,
+        auth_score AS authScore,
+        phone_sign AS phoneSign,
+        is_pay AS isPay,
+        coupon_all_count AS couponAllCount,
+        coupon_use_count AS couponUseCount,
+        coupon_past_count AS couponPastCount,
+        refuse_remove_time as refuseRemoveTime,
+        bankauth_num AS bankauthNum,
+        is_old AS isOld
+    </sql>
+
+    <select id="selectByUserName" parameterType="java.lang.String" resultType="com.rongke.model.User">
+        SELECT
+        <include refid="com.rongke.mapper.UserMapper.mUserSql"/>
+        FROM
+        `user`
+        WHERE
+        (`user`.user_name = #{userName}
+        OR
+        `user`.phone = #{userName})
+        AND
+        (`user`.status = 1 OR  `user`.status = 4 OR  `user`.status = 5)
+    </select>
+
+    <select id="selectByPhone" parameterType="java.lang.String" resultType="com.rongke.model.User">
+        SELECT
+        <include refid="com.rongke.mapper.UserMapper.mUserSql"/>
+        FROM
+        `user`
+        WHERE
+        `user`.phone = #{phone}
+    </select>
+
+
+    <select id="selectByToken" parameterType="java.lang.String" resultType="com.rongke.model.User">
+        SELECT
+        <include refid="com.rongke.mapper.UserMapper.mUserSql"/>
+        FROM
+        `user`
+        WHERE
+        `user`.token = #{token}
+    </select>
+
+    <!--<select id="seleAllUserInfo" parameterMap="map" resultMap="userMap1"-->
+
+
+
+
+    <update id="updateUserList"  parameterType="map" >
+           update user
+            <set>
+               user.admin_audit_id=#{adminId}
+            </set>
+        WHERE user IN #{userList}
+
+
+
+    </update>
+    
+    <select id="selectCanLinquNum" resultType="int">
+        SELECT sum(1) FROM user,user_auth
+        where user.id=user_auth.user_id
+        AND user.admin_audit_id IS NULL
+        AND user.auth_status=0
+        AND user_auth.zhifubao_auth=1
+
+    </select>
+
+
+    <select id="selectLinquUser" resultType="com.rongke.model.User">
+        SELECT * FROM  user ,user_auth where
+        user.id=user_auth.user_id AND
+        user.admin_audit_id IS  NULL
+        AND user.auth_status=0
+        AND user_auth.zhifubao_auth=1
+
+    </select>
+
+
+    <select id="getChannleNameByUser" resultType="string" parameterType="long">
+        select c.`name` from `user` u ,channel c where u.channel_id =c.id and u.id = #{id}
+    </select>
+
+    <select id="getBlackUserList" resultType="com.rongke.model.User">
+        select u.* from user u,user_identity ui where ui.user_id = u.id and u.`status` = 2
+    </select>
+
+    <select id="getAllPhone" resultType="string">
+        select phone from user
+    </select>
+
+    <select id="selectUserRegisterCountByBetweenDate" parameterType="map" resultType="int">
+        select count(1) from user where gmt_datetime BETWEEN #{startTime} and #{endTime}
+        <if test="channelId!=null and channelId != ''">
+            AND channel_id = #{channelId}
+        </if>
+    </select>
+
+
+    <select id="getCountUserData" parameterType="com.alibaba.fastjson.JSONObject" resultType="int">
+
+        SELECT
+        count(u.id) as userNum
+        FROM `user` u
+        <where>
+            <if test="channelId !=null"> u.channel_id=#{channelId} </if>
+            <if test="startTime !=null">AND  DATE_FORMAT(u.gmt_datetime,'%Y-%m-%d')>=DATE_FORMAT(#{startTime},'%Y-%m-%d')</if>
+            <if test="endTime !=null"><![CDATA[ AND  DATE_FORMAT(u.gmt_datetime,'%Y-%m-%d')<=DATE_FORMAT(#{endTime},'%Y-%m-%d') ]]> </if>
+        </where>
+
+    </select>
+
+</mapper>

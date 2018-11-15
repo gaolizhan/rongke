@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.AddressLogMapper">
+
+    <resultMap type="com.rongke.model.AddressLog" id="mAddressLog" autoMapping="true">
+        <association property="user_id" javaType="com.rongke.model.User" autoMapping="true"/>
+    </resultMap>
+
+    <sql id="mColumnsSql">
+        id AS id,
+        gmt_datetime AS gmtDatetime,
+        upt_datetime AS uptDatetime,
+        user_id AS userId,
+        user_name AS userName,
+        user_phone AS userPhone,
+        province AS province,
+        city AS city,
+        county AS county,
+        area_code AS areaCode,
+        county_code AS countyCode,
+        address AS address
+    </sql>
+</mapper>

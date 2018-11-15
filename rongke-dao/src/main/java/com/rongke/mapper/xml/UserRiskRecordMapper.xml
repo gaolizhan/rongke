@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.rongke.mapper.UserRiskRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.rongke.model.UserRiskRecord" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="loan_id" property="loanId" jdbcType="BIGINT" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="risk_status" property="riskStatus" jdbcType="VARCHAR" />
+    <result column="user_risk_rule_id" property="userRiskRuleId" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="value" property="value" jdbcType="VARCHAR" />
+    <result column="rule_group" property="ruleGroup" jdbcType="VARCHAR" />
+    <result column="coerce_sign" property="coerceSign" jdbcType="BIT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, user_id, loan_id, description, risk_status, user_risk_rule_id, create_time, value, 
+    rule_group, coerce_sign
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_risk_record
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from user_risk_record
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.rongke.model.UserRiskRecord" >
+    insert into user_risk_record (id, user_id, loan_id, 
+      description, risk_status, user_risk_rule_id, 
+      create_time, value, rule_group, 
+      coerce_sign)
+    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{loanId,jdbcType=BIGINT}, 
+      #{description,jdbcType=VARCHAR}, #{riskStatus,jdbcType=VARCHAR}, #{userRiskRuleId,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{value,jdbcType=VARCHAR}, #{ruleGroup,jdbcType=VARCHAR}, 
+      #{coerceSign,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.rongke.model.UserRiskRecord" >
+    insert into user_risk_record
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="loanId != null" >
+        loan_id,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="riskStatus != null" >
+        risk_status,
+      </if>
+      <if test="userRiskRuleId != null" >
+        user_risk_rule_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="value != null" >
+        value,
+      </if>
+      <if test="ruleGroup != null" >
+        rule_group,
+      </if>
+      <if test="coerceSign != null" >
+        coerce_sign,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="loanId != null" >
+        #{loanId,jdbcType=BIGINT},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="riskStatus != null" >
+        #{riskStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="userRiskRuleId != null" >
+        #{userRiskRuleId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="value != null" >
+        #{value,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleGroup != null" >
+        #{ruleGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="coerceSign != null" >
+        #{coerceSign,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.rongke.model.UserRiskRecord" >
+    update user_risk_record
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="loanId != null" >
+        loan_id = #{loanId,jdbcType=BIGINT},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="riskStatus != null" >
+        risk_status = #{riskStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="userRiskRuleId != null" >
+        user_risk_rule_id = #{userRiskRuleId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="value != null" >
+        value = #{value,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleGroup != null" >
+        rule_group = #{ruleGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="coerceSign != null" >
+        coerce_sign = #{coerceSign,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.rongke.model.UserRiskRecord" >
+    update user_risk_record
+    set user_id = #{userId,jdbcType=BIGINT},
+      loan_id = #{loanId,jdbcType=BIGINT},
+      description = #{description,jdbcType=VARCHAR},
+      risk_status = #{riskStatus,jdbcType=VARCHAR},
+      user_risk_rule_id = #{userRiskRuleId,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      value = #{value,jdbcType=VARCHAR},
+      rule_group = #{ruleGroup,jdbcType=VARCHAR},
+      coerce_sign = #{coerceSign,jdbcType=BIT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

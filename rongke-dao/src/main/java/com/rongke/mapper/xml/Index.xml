@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.IndexMapper">
+
+
+    <select id="userAddCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+          COUNT(1)
+        FROM `user`
+        WHERE `user`.`status`='1'
+        AND `user`.`auth_status`='1'
+        AND `user`.`upt_datetime` LIKE CONCAT(CONCAT('%',#{time}),'%')
+    </select>
+
+    <select id="blackUserCount" resultType="java.lang.Integer">
+        SELECT COUNT(DISTINCT(user_id))
+        FROM `loan_order`
+        WHERE loan_order.order_status='8'
+    </select>
+
+    <select id="userAllCount"  resultType="java.lang.Integer">
+        SELECT
+         COUNT(1)
+        FROM `user`
+        WHERE `user`.`status`='1'
+        AND `user`.`auth_status`='1'
+    </select>
+
+    <select id="outMoneyUserCount" resultType="java.lang.Integer">
+        SELECT COUNT(DISTINCT(user_id))
+        FROM `loan_order`
+        WHERE loan_order.order_status IN(3,4,5,6,8)
+    </select>
+
+    <select id="badOrderUserCount" resultType="java.lang.Integer">
+        SELECT COUNT(DISTINCT(user_id))
+        FROM `loan_order`
+        WHERE loan_order.order_status='8'
+    </select>
+
+    <select id="orderPassUserCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+          COUNT(1)
+        FROM `loan_order`
+        WHERE loan_order.pass_time LIKE CONCAT(CONCAT('%',#{time}),'%')
+    </select>
+
+    <select id="moneyOutAll" parameterType="java.util.Map" resultType="string">
+        SELECT
+        SUM(real_money)
+        FROM `loan_order`
+        WHERE
+        loan_order.give_time LIKE CONCAT(CONCAT('%',#{time}),'%')
+    </select>
+
+    <select id="moneyBackAll" parameterType="java.util.Map" resultType="string">
+        SELECT
+          SUM(need_pay_money)
+        FROM `loan_order`
+        WHERE loan_order.real_pay_time LIKE CONCAT(CONCAT('%',#{time}),'%')
+    </select>
+
+
+    <select id="userAddCountChannel" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        COUNT(1)
+        FROM `user`
+        WHERE `user`.`status`='1'
+        AND `user`.`auth_status`='1'
+        AND `user`.`channel_id`=#{channelName}
+        AND `user`.`upt_datetime` LIKE CONCAT(CONCAT('%',#{time}),'%')
+    </select>
+
+
+    <select id="orderOutMoneyChannel" parameterType="java.util.Map" resultType="string">
+        SELECT
+        SUM(loan_order.`real_money`) FROM
+        `loan_order`,`user`,`channel`
+        WHERE loan_order.`user_id`=`user`.`id`
+        AND `channel`.`id`=`user`.`channel_id`
+        AND `channel`.`id`=#{channelName}
+        AND loan_order.give_time LIKE CONCAT(CONCAT('%',#{time}),'%')
+        AND `channel`.status = 1
+    </select>
+
+    <select id="applyOrderMoneyChannel" parameterType="java.util.Map" resultType="string">
+        SELECT
+        SUM(loan_order.`borrow_money`) FROM
+        `loan_order`,`user`,`channel`
+        WHERE loan_order.`user_id`=`user`.`id`
+        AND `channel`.`id`=`user`.`channel_id`
+        AND `channel`.`id`=#{channelName}
+        AND loan_order.gmt_datetime LIKE CONCAT(CONCAT('%',#{time}),'%')
+        AND `channel`.status = 1
+    </select>
+
+    <select id="orderChannelProfitChannel" parameterType="java.util.Map" resultType="string">
+        SELECT
+        SUM(loan_order.`channel_profit`) FROM
+        `loan_order`,`user`,`channel`
+        WHERE loan_order.`user_id`=`user`.`id`
+        AND `channel`.`id`=`user`.`channel_id`
+        AND `channel`.`id`=#{channelName}
+        AND `loan_order`.`order_status`=6
+        AND loan_order.gmt_datetime LIKE CONCAT(CONCAT('%',#{time}),'%')
+        AND `channel`.status = 1
+    </select>
+
+
+
+
+</mapper>
+

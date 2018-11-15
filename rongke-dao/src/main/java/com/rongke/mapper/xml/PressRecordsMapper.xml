@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.PressRecordsMapper">
+
+    <resultMap type="com.rongke.model.PressRecords" id="mPressRecords" autoMapping="true">
+    </resultMap>
+
+    <sql id="mColumnsSql">
+        id AS id,
+        gmt_datetime AS gmtDatetime,
+        upt_datetime AS uptDatetime,
+        press_money_man AS pressMoneyMan,
+        is_success AS isSuccess,
+        content AS content,
+        order_id AS orderId,
+        user_id AS userId
+    </sql>
+</mapper>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.TbBaseInfoMapper">
+
+    <resultMap type="com.rongke.model.TbBaseInfo" id="mTbBaseInfo" autoMapping="true">
+    </resultMap>
+
+    <sql id="mColumnsSql">
+        id AS id,
+        user_id AS userId,
+        user_name AS userName,
+        email AS email,
+        user_level AS userLevel,
+        nick_name AS nickName,
+        name AS name,
+        gender AS gender,
+        mobile AS mobile,
+        real_name AS realName,
+        identity_code AS identityCode,
+        vip_count AS vipCount,
+        gmt_datetime AS gmtDatetime
+    </sql>
+</mapper>

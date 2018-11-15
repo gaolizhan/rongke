@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.AdminMapper">
+
+    <resultMap type="com.rongke.model.Admin" id="mAdmin" autoMapping="true">
+        <association property="role_id" javaType="com.rongke.model.Role" autoMapping="true" />
+    </resultMap>
+
+    <resultMap id="selectPageResultMap" type="com.rongke.model.Admin">
+        <id property="id" column="id"></id>
+        <result property="userName" column="user_name"></result>
+        <association property="role" javaType="com.rongke.model.Role">
+            <result property="title" column="title"></result>
+        </association>
+    </resultMap>
+
+    <select id="selectPage1" parameterType="java.util.Map" resultMap="selectPageResultMap">
+        SELECT admin.`id`,admin.`user_name`,role.`title`,department.`department`
+        FROM `admin`,`role`,`department`
+        WHERE admin.`role_id`=role.`id` AND  admin.`department_id`=department.`id`
+        AND admin.status = 1
+        LIMIT ${pageNo},${pageSize}
+    </select>
+
+    <sql id="mColumnsSql">
+        id AS id,
+        user_name AS userName,
+        password AS password,
+        phone AS phone,
+        role_id AS roleId,
+        token AS token,
+        status AS status,
+        gmt_datetime AS gmtDatetime,
+        upt_datetime AS uptDatetime,
+        department_id AS departmentId
+    </sql>
+</mapper>

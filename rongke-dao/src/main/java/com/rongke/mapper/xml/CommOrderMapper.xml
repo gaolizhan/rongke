@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.rongke.mapper.CommOrderMapper" >
+
+
+  <resultMap type="com.rongke.model.CommOrder" id="mCommOrder" autoMapping="true">
+  </resultMap>
+
+  <sql id="mColumnsSql">
+    comm_order_id AS commOrderId,
+    real_pay_amount AS realPayAmount,
+    create_time AS createTime,
+    update_time AS updateTime,
+    payment_time AS paymentTime,
+    end_time AS endTime,
+    user_id AS userId,
+    status AS status,
+    need_pay_amount AS needPayAmount,
+    post_amount AS postAmount,
+    comm_total_amount AS commTotalAmount,
+    receiver_name AS receiverName,
+    receiver_phone AS receiverPhone,
+    receiver_address AS receiverAddress,
+    comm_info_json AS commInfoJson
+  </sql>
+
+  <resultMap id="BaseResultMap" type="com.rongke.model.CommOrder" >
+    <id column="comm_order_id" property="commOrderId" jdbcType="VARCHAR" />
+    <result column="real_pay_amount" property="realPayAmount" jdbcType="DECIMAL" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="payment_time" property="paymentTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="need_pay_amount" property="needPayAmount" jdbcType="DECIMAL" />
+    <result column="post_amount" property="postAmount" jdbcType="DECIMAL" />
+    <result column="comm_total_amount" property="commTotalAmount" jdbcType="DECIMAL" />
+    <result column="receiver_name" property="receiverName" jdbcType="VARCHAR" />
+    <result column="receiver_phone" property="receiverPhone" jdbcType="VARCHAR" />
+    <result column="receiver_address" property="receiverAddress" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.rongke.model.CommOrder" extends="BaseResultMap" >
+    <result column="comm_info_json" property="commInfoJson" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    comm_order_id, real_pay_amount, create_time, update_time, payment_time, end_time,
+    user_id, status, need_pay_amount, post_amount, comm_total_amount, receiver_name,
+    receiver_phone, receiver_address
+  </sql>
+  <sql id="Blob_Column_List" >
+    comm_info_json
+  </sql>
+
+</mapper>

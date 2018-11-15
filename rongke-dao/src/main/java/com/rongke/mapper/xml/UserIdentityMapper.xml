@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.UserIdentityMapper">
+
+    <resultMap type="com.rongke.model.UserIdentity" id="mUserIdentity" autoMapping="true">
+        <association property="user_id" javaType="com.rongke.model.User" autoMapping="true"/>
+    </resultMap>
+
+
+    <resultMap id="selectByPageResultMap" type="com.rongke.model.UserIdentity">
+        <result property="id" column="id"/>
+        <result property="identityFront" column="identity_front"/>
+        <result property="identityBack" column="identity_back"/>
+        <result property="faceUrl" column="face_url"/>
+        <result property="identityNum" column="identity_num"/>
+        <result property="userName" column="user_name"/>
+        <result property="qqNum" column="qq_num"/>
+        <result property="address" column="address"/>
+        <result property="addressDetails" column="address_details"/>
+        <result property="status" column="status"/>
+        <result property="gmtDatetime" column="gmt_datetime"/>
+        <result property="uptDatetime" column="upt_datetime"/>
+        <association property="user" javaType="com.rongke.model.User">
+            <id property="id" column="user_id"/>
+            <result property="phone" column="phone"/>
+        </association>
+
+    </resultMap>
+
+
+    <select id="selectByPage" resultType="java.util.Map" resultMap="selectByPageResultMap">
+        SELECT `user`.`phone`,`user_identity`.id,`user_identity`.user_id,`user_identity`.identity_front,`user_identity`.identity_back,`user_identity`.face_url,
+        `user_identity`.user_name,`user_identity`.status,`user_identity`.identity_num,`user_identity`.gmt_datetime,`user_identity`.upt_datetime
+        FROM `user`,`user_identity`
+        WHERE `user`.`id`=`user_identity`.user_id
+        <if test="phone != null and phone != ''">
+            AND  `user`.`phone` LIKE CONCAT(CONCAT('%',#{phone}),'%')
+        </if>
+        <if test="realName != null and realName != ''">
+            AND  `user_identity`.`user_name` LIKE CONCAT(CONCAT('%',#{realName}),'%')
+        </if>
+        <if test="status != null and status != -1">
+            AND  user_identity.status = #{status}
+        </if>  ORDER BY user_identity.gmt_datetime DESC
+        LIMIT ${pageNo},${pageSize}
+    </select>
+
+    <select id="selectCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM `user_identity`,`user`
+        WHERE user_identity.`user_id`=`user`.`id`
+        <if test="phone != null and phone != ''">
+            AND  `user`.`phone` LIKE CONCAT(CONCAT('%',#{phone}),'%')
+        </if>
+        <if test="realName != null and realName != ''">
+            AND  `user_identity`.`user_name` LIKE CONCAT(CONCAT('%',#{realName}),'%')
+        </if>
+        <if test="status != null and status != -1">
+            AND  user_identity.status = #{status}
+        </if>
+    </select>
+
+
+    <select id="selectOneDetailsByUserId" parameterType="String" resultMap="selectByPageResultMap">
+      SELECT `user`.`phone`,`user_identity`.id,`user_identity`.user_id,`user_identity`.qq_num,`user_identity`.address,`user_identity`.address_details,`user_identity`.identity_front,`user_identity`.identity_back,`user_identity`.face_url,
+        `user_identity`.user_name,`user_identity`.status,`user_identity`.identity_num,`user_identity`.gmt_datetime,`user_identity`.upt_datetime
+        FROM `user`,`user_identity`
+        WHERE `user`.`id`=`user_identity`.user_id
+        AND `user`.id=#{id}
+    </select>
+
+
+
+    <sql id="mColumnsSql">
+        id AS id,
+        user_id AS userId,
+        identity_front AS identityFront,
+        identity_back AS identityBack,
+        face_url AS faceUrl,
+        gmt_datetime AS gmtDatetime,
+        upt_datetime AS uptDatetime
+    </sql>
+</mapper>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.rongke.mapper.UserAddressMapper" >
+
+  <resultMap type="com.rongke.model.UserAddress" id="mUserAddress" autoMapping="true">
+      <id column="address_id" property="addressId" jdbcType="BIGINT" />
+  </resultMap>
+
+  <resultMap id="BaseResultMap" type="com.rongke.model.UserAddress" >
+    <id column="address_id" property="addressId" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="receiver_phone" property="receiverPhone" jdbcType="VARCHAR" />
+    <result column="receiver_address" property="receiverAddress" jdbcType="VARCHAR" />
+    <result column="receiver_name" property="receiverName" jdbcType="VARCHAR" />
+    <result column="default_sign" property="defaultSign" jdbcType="BIT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="located_area" property="locatedArea" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    address_id, user_id, receiver_phone, receiver_address, receiver_name, default_sign, 
+    create_time, update_time, located_area
+  </sql>
+
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.rongke.model.UserAddress" >
+        update user_address
+        <set >
+            <if test="userId != null" >
+                user_id = #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="receiverPhone != null" >
+                receiver_phone = #{receiverPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="receiverAddress != null" >
+                receiver_address = #{receiverAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="receiverName != null" >
+                receiver_name = #{receiverName,jdbcType=VARCHAR},
+            </if>
+            <if test="defaultSign != null" >
+                default_sign = #{defaultSign,jdbcType=BIT},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="locatedArea != null" >
+                located_area = #{locatedArea,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where address_id = #{addressId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateDefaultSignToFalse" parameterType="java.lang.Long" >
+    update user_address set default_sign=0 where user_id = #{userId,jdbcType=BIGINT}
+    </update>
+
+</mapper>

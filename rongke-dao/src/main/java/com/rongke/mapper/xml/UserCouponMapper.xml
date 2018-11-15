@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.UserCouponMapper">
+
+    <resultMap  type="com.rongke.model.UserCoupon" id="mUserCoupon">
+        <result property="id" column="UserCoupon_id"/>
+        <result property="saveMoney" column="UserCoupon_save_money"/>
+        <result property="status" column="UserCoupon_status"/>
+        <result property="gmtDatetime" column="UserCoupon_gmtDatetime"/>
+        <result property="pastDatetime" column="UserCoupon_pastDatetime"/>
+        <result property="inviteePhone" column="UserCoupon_inviteePhone"/>
+        <result property="uptDatetime" column="UserCoupon_uptDatetime"/>
+        <result property="userCount" column="Usercount"/>
+        <association property="user" javaType="com.rongke.model.User">
+            <id property="id" column="UserCoupon_userId" />
+            <result property="gmtDatetime" column="User_gmtDatetime"/>
+            <result property="uptDatetime" column="User_uptDatetime"/>
+            <result property="userName" column="User_userName"/>
+            <result property="password" column="User_password"/>
+            <result property="headImg" column="User_headImg"/>
+            <result property="phone" column="User_phone"/>
+            <result property="token" column="User_token"/>
+            <result property="uuid" column="User_uuid"/>
+            <result property="money" column="User_money"/>
+            <result property="userType" column="User_userType"/>
+            <result property="authStatus" column="User_authStatus"/>
+            <result property="status" column="User_status"/>
+            <result property="token" column="User_token"/>
+            <result property="status" column="User_status"/>
+            <result property="payPwd" column="User_payPwd"/>
+            <result property="phoneSign" column="User_phoneSign"/>
+            <result property="isPay" column="User_isPay"/>
+            <result property="couponAllCount" column="User_couponAllCount"/>
+            <result property="couponUseCount" column="User_couponUseCount"/>
+            <result property="couponPastCount" column="User_couponPastCount"/>
+            <result property="authScore" column="User_authScore"/>
+        </association>
+        <association property="coupon" javaType="com.rongke.model.Coupon" autoMapping="true"/>
+    </resultMap>
+
+
+    <resultMap id="findByUserPageResultMap" type="com.rongke.model.UserCoupon">
+        <result property="id" column="id"/>
+        <result property="saveMoney" column="save_money"/>
+        <result property="status" column="status"/>
+        <result property="gmtDatetime" column="gmt_datetime"/>
+        <result property="pastDatetime" column="past_datetime"/>
+        <association property="coupon" javaType="com.rongke.model.Coupon">
+            <result property="validTime" column="valid_time"/>
+            <result property="type" column="type"/>
+            <result property="coupouName" column="coupou_name"/>
+            <result property="couponStatus" column="coupon_status"/>
+        </association>
+    </resultMap>
+
+
+    <select id="findByUserPage" parameterType="java.util.Map" resultMap="findByUserPageResultMap">
+        SELECT coupon.valid_time,coupon.`coupon_status`,coupon.`coupou_name`,user_coupon.`gmt_datetime`,user_coupon.`past_datetime`,coupon.`type`,user_coupon.save_money,user_coupon.status,user_coupon.id
+        FROM `user_coupon`,`user`,`coupon`
+        WHERE user_coupon.`coupon_id` = coupon.`id`
+        AND `user`.`id` = user_coupon.`user_id`
+        AND `user`.`id`=#{userId}
+        LIMIT ${pageNo},${pageSize}
+    </select>
+
+    <select id="selectByUserCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM `user_coupon`,`user`,`coupon`
+        WHERE user_coupon.`coupon_id` = coupon.`id`
+        AND `user`.`id` = user_coupon.`user_id`
+        AND `user`.`id`=#{userId}
+    </select>
+
+
+    <sql id="mColumnsSql">
+        id AS id,
+        gmt_datetime AS gmtDatetime,
+        upt_datetime AS uptDatetime,
+        user_id AS userId,
+        coupon_id AS couponId,
+        save_money AS saveMoney,
+        status AS status
+    </sql>
+
+    <select id="selectFriendCount" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        SELECT
+        count(user_coupon.id) AS num
+        FROM
+        `user_coupon`
+        LEFT JOIN coupon ON user_coupon.coupon_id = coupon.id
+        WHERE
+        user_coupon.user_id = #{id}
+        AND coupon.type = 2
+    </select>
+
+    <select id="selectFriendMoney" parameterType="java.lang.Long" resultType="java.math.BigDecimal">
+        SELECT
+        SUM(user_coupon.save_money) as money
+        FROM
+        `user_coupon`
+        LEFT JOIN coupon ON user_coupon.coupon_id = coupon.id
+        WHERE
+        user_coupon.user_id = #{id}
+        AND coupon.type = 2
+    </select>
+
+    <select id="selectUserCouponList" resultType="java.util.Map" parameterType="java.lang.Long">
+        SELECT
+          user_coupon.id AS id,
+          user_coupon.save_money AS saveMoney,
+          coupon.coupou_name AS name,
+          user_coupon.past_datetime AS limitTime
+        FROM
+        user_coupon
+        LEFT JOIN coupon ON  user_coupon.coupon_id = coupon.id
+        WHERE user_coupon.user_id = #{id}
+        AND user_coupon.status = 1
+    </select>
+
+    <select id="selectUserCouponPast" resultMap="mUserCoupon" >
+        SELECT
+            user_coupon.gmt_datetime AS UserCoupon_gmtDatetime,
+            user_coupon.upt_datetime AS UserCoupon_uptDatetime,
+            user_coupon.user_id AS UserCoupon_userId,
+            user_coupon.coupon_id AS UserCoupon_couponId,
+            user_coupon.save_money AS UserCoupon_saveMoney,
+            user_coupon.status AS UserCoupon_status,
+            user_coupon.invitee_phone AS UserCoupon_inviteePhone,
+            user_coupon.id AS UserCoupon_id,
+            `user`.id AS User_id,
+            `user`.gmt_datetime AS User_gmtDatetime,
+            `user`.upt_datetime AS User_uptDatetime,
+            `user`.uuid AS User_uuid,
+            `user`.user_name AS User_userName,
+            `user`.password AS User_password,
+            `user`.head_img AS User_headImg,
+            `user`.phone AS User_phone,
+            `user`.money AS User_money,
+            `user`.user_type AS User_userType,
+            `user`.auth_status AS User_authStatus,
+            `user`.status AS User_status,
+            `user`.pay_pwd AS User_payPwd,
+            `user`.auth_score AS User_authScore,
+            `user`.auth_status AS User_authStatus,
+            `user`.phone_sign AS User_phoneSign,
+            `user`.is_pay AS User_isPay,
+            `user`.coupon_all_count AS User_couponAllCount,
+            `user`.coupon_use_count AS User_couponUseCount,
+            `user`.coupon_past_count AS User_couponPastCount,
+            count(user_coupon.id) AS Usercount
+        FROM
+            user_coupon
+        LEFT JOIN `user` ON user_coupon.user_id = `user`.id
+        WHERE
+            user_coupon.`status` = 1
+        AND curdate() > user_coupon.past_datetime
+        GROUP BY
+            user_coupon.user_id
+    </select>
+
+
+
+</mapper>

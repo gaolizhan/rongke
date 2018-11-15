@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.UserBankMapper">
+
+    <resultMap type="com.rongke.model.UserBank" id="mUserBank" autoMapping="true">
+        <association property="user_id" javaType="com.rongke.model.User" autoMapping="true" />
+    </resultMap>
+
+    <sql id="mColumnsSql">
+        id AS id,
+        user_id AS userId,
+        bank_name AS bankName,
+        cardname AS cardname,
+        cardtype AS cardtype,
+        bankcardno AS bankcardno,
+        idcardno AS idcardno,
+        birthday AS birthday,
+        address AS address,
+        bank_phone AS bankPhone,
+        bind_id AS bindId,
+        name AS name,
+        mobile_city AS mobileCity,
+        gmt_datetime AS gmtDatetime,
+        upt_datetime AS uptDatetime
+    </sql>
+</mapper>

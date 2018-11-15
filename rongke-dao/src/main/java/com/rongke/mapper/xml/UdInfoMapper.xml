@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.rongke.mapper.UdInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.rongke.model.UdInfo" >
+    <id column="ud_info_id" property="udInfoId" jdbcType="VARCHAR" />
+    <result column="ud_order_no" property="udOrderNo" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="user_feature_type" property="userFeatureType" jdbcType="VARCHAR" />
+    <result column="user_feature_type_str" property="userFeatureTypeStr" jdbcType="VARCHAR" />
+    <result column="actual_loan_platform_count" property="actualLoanPlatformCount" jdbcType="VARCHAR" />
+    <result column="actual_loan_platform_count_1m" property="actualLoanPlatformCount1m" jdbcType="VARCHAR" />
+    <result column="actual_loan_platform_count_3m" property="actualLoanPlatformCount3m" jdbcType="VARCHAR" />
+    <result column="actual_loan_platform_count_6m" property="actualLoanPlatformCount6m" jdbcType="VARCHAR" />
+    <result column="loan_platform_count" property="loanPlatformCount" jdbcType="VARCHAR" />
+    <result column="loan_platform_count_1m" property="loanPlatformCount1m" jdbcType="VARCHAR" />
+    <result column="loan_platform_count_3m" property="loanPlatformCount3m" jdbcType="VARCHAR" />
+    <result column="loan_platform_count_6m" property="loanPlatformCount6m" jdbcType="VARCHAR" />
+    <result column="repayment_platform_count" property="repaymentPlatformCount" jdbcType="VARCHAR" />
+    <result column="repayment_platform_count_1m" property="repaymentPlatformCount1m" jdbcType="VARCHAR" />
+    <result column="repayment_platform_count_3m" property="repaymentPlatformCount3m" jdbcType="VARCHAR" />
+    <result column="repayment_platform_count_6m" property="repaymentPlatformCount6m" jdbcType="VARCHAR" />
+    <result column="repayment_times_count" property="repaymentTimesCount" jdbcType="VARCHAR" />
+    <result column="score" property="score" jdbcType="VARCHAR" />
+    <result column="risk_evaluation" property="riskEvaluation" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ud_info_id, ud_order_no, user_id, create_time, user_feature_type, user_feature_type_str, 
+    actual_loan_platform_count, actual_loan_platform_count_1m, actual_loan_platform_count_3m, 
+    actual_loan_platform_count_6m, loan_platform_count, loan_platform_count_1m, loan_platform_count_3m, 
+    loan_platform_count_6m, repayment_platform_count, repayment_platform_count_1m, repayment_platform_count_3m, 
+    repayment_platform_count_6m, repayment_times_count, score, risk_evaluation
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from ud_info
+    where ud_info_id = #{udInfoId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ud_info
+    where ud_info_id = #{udInfoId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.rongke.model.UdInfo" >
+    insert into ud_info (ud_info_id, ud_order_no, user_id, 
+      create_time, user_feature_type, user_feature_type_str, 
+      actual_loan_platform_count, actual_loan_platform_count_1m, 
+      actual_loan_platform_count_3m, actual_loan_platform_count_6m, 
+      loan_platform_count, loan_platform_count_1m, 
+      loan_platform_count_3m, loan_platform_count_6m, 
+      repayment_platform_count, repayment_platform_count_1m, 
+      repayment_platform_count_3m, repayment_platform_count_6m, 
+      repayment_times_count, score, risk_evaluation
+      )
+    values (#{udInfoId,jdbcType=VARCHAR}, #{udOrderNo,jdbcType=VARCHAR}, #{userId,jdbcType=BIGINT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{userFeatureType,jdbcType=VARCHAR}, #{userFeatureTypeStr,jdbcType=VARCHAR}, 
+      #{actualLoanPlatformCount,jdbcType=VARCHAR}, #{actualLoanPlatformCount1m,jdbcType=VARCHAR}, 
+      #{actualLoanPlatformCount3m,jdbcType=VARCHAR}, #{actualLoanPlatformCount6m,jdbcType=VARCHAR}, 
+      #{loanPlatformCount,jdbcType=VARCHAR}, #{loanPlatformCount1m,jdbcType=VARCHAR}, 
+      #{loanPlatformCount3m,jdbcType=VARCHAR}, #{loanPlatformCount6m,jdbcType=VARCHAR}, 
+      #{repaymentPlatformCount,jdbcType=VARCHAR}, #{repaymentPlatformCount1m,jdbcType=VARCHAR}, 
+      #{repaymentPlatformCount3m,jdbcType=VARCHAR}, #{repaymentPlatformCount6m,jdbcType=VARCHAR}, 
+      #{repaymentTimesCount,jdbcType=VARCHAR}, #{score,jdbcType=VARCHAR}, #{riskEvaluation,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.rongke.model.UdInfo" >
+    insert into ud_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="udInfoId != null" >
+        ud_info_id,
+      </if>
+      <if test="udOrderNo != null" >
+        ud_order_no,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="userFeatureType != null" >
+        user_feature_type,
+      </if>
+      <if test="userFeatureTypeStr != null" >
+        user_feature_type_str,
+      </if>
+      <if test="actualLoanPlatformCount != null" >
+        actual_loan_platform_count,
+      </if>
+      <if test="actualLoanPlatformCount1m != null" >
+        actual_loan_platform_count_1m,
+      </if>
+      <if test="actualLoanPlatformCount3m != null" >
+        actual_loan_platform_count_3m,
+      </if>
+      <if test="actualLoanPlatformCount6m != null" >
+        actual_loan_platform_count_6m,
+      </if>
+      <if test="loanPlatformCount != null" >
+        loan_platform_count,
+      </if>
+      <if test="loanPlatformCount1m != null" >
+        loan_platform_count_1m,
+      </if>
+      <if test="loanPlatformCount3m != null" >
+        loan_platform_count_3m,
+      </if>
+      <if test="loanPlatformCount6m != null" >
+        loan_platform_count_6m,
+      </if>
+      <if test="repaymentPlatformCount != null" >
+        repayment_platform_count,
+      </if>
+      <if test="repaymentPlatformCount1m != null" >
+        repayment_platform_count_1m,
+      </if>
+      <if test="repaymentPlatformCount3m != null" >
+        repayment_platform_count_3m,
+      </if>
+      <if test="repaymentPlatformCount6m != null" >
+        repayment_platform_count_6m,
+      </if>
+      <if test="repaymentTimesCount != null" >
+        repayment_times_count,
+      </if>
+      <if test="score != null" >
+        score,
+      </if>
+      <if test="riskEvaluation != null" >
+        risk_evaluation,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="udInfoId != null" >
+        #{udInfoId,jdbcType=VARCHAR},
+      </if>
+      <if test="udOrderNo != null" >
+        #{udOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userFeatureType != null" >
+        #{userFeatureType,jdbcType=VARCHAR},
+      </if>
+      <if test="userFeatureTypeStr != null" >
+        #{userFeatureTypeStr,jdbcType=VARCHAR},
+      </if>
+      <if test="actualLoanPlatformCount != null" >
+        #{actualLoanPlatformCount,jdbcType=VARCHAR},
+      </if>
+      <if test="actualLoanPlatformCount1m != null" >
+        #{actualLoanPlatformCount1m,jdbcType=VARCHAR},
+      </if>
+      <if test="actualLoanPlatformCount3m != null" >
+        #{actualLoanPlatformCount3m,jdbcType=VARCHAR},
+      </if>
+      <if test="actualLoanPlatformCount6m != null" >
+        #{actualLoanPlatformCount6m,jdbcType=VARCHAR},
+      </if>
+      <if test="loanPlatformCount != null" >
+        #{loanPlatformCount,jdbcType=VARCHAR},
+      </if>
+      <if test="loanPlatformCount1m != null" >
+        #{loanPlatformCount1m,jdbcType=VARCHAR},
+      </if>
+      <if test="loanPlatformCount3m != null" >
+        #{loanPlatformCount3m,jdbcType=VARCHAR},
+      </if>
+      <if test="loanPlatformCount6m != null" >
+        #{loanPlatformCount6m,jdbcType=VARCHAR},
+      </if>
+      <if test="repaymentPlatformCount != null" >
+        #{repaymentPlatformCount,jdbcType=VARCHAR},
+      </if>
+      <if test="repaymentPlatformCount1m != null" >
+        #{repaymentPlatformCount1m,jdbcType=VARCHAR},
+      </if>
+      <if test="repaymentPlatformCount3m != null" >
+        #{repaymentPlatformCount3m,jdbcType=VARCHAR},
+      </if>
+      <if test="repaymentPlatformCount6m != null" >
+        #{repaymentPlatformCount6m,jdbcType=VARCHAR},
+      </if>
+      <if test="repaymentTimesCount != null" >
+        #{repaymentTimesCount,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=VARCHAR},
+      </if>
+      <if test="riskEvaluation != null" >
+        #{riskEvaluation,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.rongke.model.UdInfo" >
+    update ud_info
+    <set >
+      <if test="udOrderNo != null" >
+        ud_order_no = #{udOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userFeatureType != null" >
+        user_feature_type = #{userFeatureType,jdbcType=VARCHAR},
+      </if>
+      <if test="userFeatureTypeStr != null" >
+        user_feature_type_str = #{userFeatureTypeStr,jdbcType=VARCHAR},
+      </if>
+      <if test="actualLoanPlatformCount != null" >
+        actual_loan_platform_count = #{actualLoanPlatformCount,jdbcType=VARCHAR},
+      </if>
+      <if test="actualLoanPlatformCount1m != null" >
+        actual_loan_platform_count_1m = #{actualLoanPlatformCount1m,jdbcType=VARCHAR},
+      </if>
+      <if test="actualLoanPlatformCount3m != null" >
+        actual_loan_platform_count_3m = #{actualLoanPlatformCount3m,jdbcType=VARCHAR},
+      </if>
+      <if test="actualLoanPlatformCount6m != null" >
+        actual_loan_platform_count_6m = #{actualLoanPlatformCount6m,jdbcType=VARCHAR},
+      </if>
+      <if test="loanPlatformCount != null" >
+        loan_platform_count = #{loanPlatformCount,jdbcType=VARCHAR},
+      </if>
+      <if test="loanPlatformCount1m != null" >
+        loan_platform_count_1m = #{loanPlatformCount1m,jdbcType=VARCHAR},
+      </if>
+      <if test="loanPlatformCount3m != null" >
+        loan_platform_count_3m = #{loanPlatformCount3m,jdbcType=VARCHAR},
+      </if>
+      <if test="loanPlatformCount6m != null" >
+        loan_platform_count_6m = #{loanPlatformCount6m,jdbcType=VARCHAR},
+      </if>
+      <if test="repaymentPlatformCount != null" >
+        repayment_platform_count = #{repaymentPlatformCount,jdbcType=VARCHAR},
+      </if>
+      <if test="repaymentPlatformCount1m != null" >
+        repayment_platform_count_1m = #{repaymentPlatformCount1m,jdbcType=VARCHAR},
+      </if>
+      <if test="repaymentPlatformCount3m != null" >
+        repayment_platform_count_3m = #{repaymentPlatformCount3m,jdbcType=VARCHAR},
+      </if>
+      <if test="repaymentPlatformCount6m != null" >
+        repayment_platform_count_6m = #{repaymentPlatformCount6m,jdbcType=VARCHAR},
+      </if>
+      <if test="repaymentTimesCount != null" >
+        repayment_times_count = #{repaymentTimesCount,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        score = #{score,jdbcType=VARCHAR},
+      </if>
+      <if test="riskEvaluation != null" >
+        risk_evaluation = #{riskEvaluation,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ud_info_id = #{udInfoId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.rongke.model.UdInfo" >
+    update ud_info
+    set ud_order_no = #{udOrderNo,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      user_feature_type = #{userFeatureType,jdbcType=VARCHAR},
+      user_feature_type_str = #{userFeatureTypeStr,jdbcType=VARCHAR},
+      actual_loan_platform_count = #{actualLoanPlatformCount,jdbcType=VARCHAR},
+      actual_loan_platform_count_1m = #{actualLoanPlatformCount1m,jdbcType=VARCHAR},
+      actual_loan_platform_count_3m = #{actualLoanPlatformCount3m,jdbcType=VARCHAR},
+      actual_loan_platform_count_6m = #{actualLoanPlatformCount6m,jdbcType=VARCHAR},
+      loan_platform_count = #{loanPlatformCount,jdbcType=VARCHAR},
+      loan_platform_count_1m = #{loanPlatformCount1m,jdbcType=VARCHAR},
+      loan_platform_count_3m = #{loanPlatformCount3m,jdbcType=VARCHAR},
+      loan_platform_count_6m = #{loanPlatformCount6m,jdbcType=VARCHAR},
+      repayment_platform_count = #{repaymentPlatformCount,jdbcType=VARCHAR},
+      repayment_platform_count_1m = #{repaymentPlatformCount1m,jdbcType=VARCHAR},
+      repayment_platform_count_3m = #{repaymentPlatformCount3m,jdbcType=VARCHAR},
+      repayment_platform_count_6m = #{repaymentPlatformCount6m,jdbcType=VARCHAR},
+      repayment_times_count = #{repaymentTimesCount,jdbcType=VARCHAR},
+      score = #{score,jdbcType=VARCHAR},
+      risk_evaluation = #{riskEvaluation,jdbcType=VARCHAR}
+    where ud_info_id = #{udInfoId,jdbcType=VARCHAR}
+  </update>
+</mapper>

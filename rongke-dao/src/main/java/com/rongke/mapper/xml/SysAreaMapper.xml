@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.SysAreaMapper">
+    <sql id="mColumnsSql">
+        id AS id,
+        area_code  AS areaCode,
+        area_name AS areaName
+    </sql>
+    <select id="selectLikeName" parameterType="String" resultType="com.rongke.model.SysArea">
+        SELECT <include refid="mColumnsSql"/> FROM sys_area WHERE area_name LIKE #{areaName}
+    </select>
+</mapper>

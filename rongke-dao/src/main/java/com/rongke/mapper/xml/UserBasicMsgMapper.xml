@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.UserBasicMsgMapper">
+
+    <resultMap type="com.rongke.model.UserBasicMsg" id="mUserBasicMsg" autoMapping="true">
+        <association property="user_id" javaType="com.rongke.model.User" autoMapping="true"/>
+    </resultMap>
+
+    <resultMap id="selectByPageResultMap" type="com.rongke.model.UserBasicMsg">
+        <id property="id" column="id"/>
+        <result property="marry" column="marry"/>
+        <result property="study" column="study"/>
+        <result property="uuid" column="uuid"/>
+        <result property="province" column="province"/>
+        <result property="city" column="city"/>
+        <result property="county" column="county"/>
+        <result property="areaCode" column="area_code"/>
+        <result property="addressDetails" column="address_details"/>
+        <result property="linkPersonNameOne" column="link_person_name_one"/>
+        <result property="linkPersonPhoneOne" column="link_person_phone_one"/>
+        <result property="linkPersonRelationOne" column="link_person_relation_one"/>
+        <result property="linkPersonNameTwo" column="link_person_name_two"/>
+        <result property="linkPersonPhoneTwo" column="link_person_phone_two"/>
+        <result property="linkPersonRelationTwo" column="link_person_relation_two"/>
+        <result property="gmtDatetime" column="gmt_datetime1"/>
+        <result property="uptDatetime" column="upt_datetime1"/>
+        <result property="status" column="status1"/>
+        <association property="user" javaType="com.rongke.model.User">
+            <id property="id" column="user_id"/>
+            <result property="gmtDatetime" column="gmt_datetime2"/>
+            <result property="uptDatetime" column="upt_datetime2"/>
+            <result property="uuid" column="uuids"/>
+            <result property="userName" column="user_name"/>
+            <result property="password" column="password"/>
+            <result property="headImg" column="head_img"/>
+            <result property="phone" column="phone"/>
+            <result property="money" column="money"/>
+            <result property="userType" column="user_type"/>
+            <result property="authStatus" column="auth_status"/>
+            <result property="token" column="token"/>
+            <result property="status" column="status"/>
+            <result property="payPwd" column="pay_pwd"/>
+            <result property="authScore" column="auth_score"/>
+            <result property="phoneSign" column="phone_sign"/>
+            <result property="isPay" column="is_pay"/>
+        </association>
+    </resultMap>
+
+    <select id="selectByPage" parameterType="java.util.Map" resultMap="selectByPageResultMap">
+        SELECT
+            user_basic_msg.`id`,user_basic_msg.`marry`,user_basic_msg.`study`,user_basic_msg.`province`,user_basic_msg.`city`,user_basic_msg.`county`,user_basic_msg.`area_code`,
+            user_basic_msg.`address_details`,user_basic_msg.`link_person_name_one`,user_basic_msg.`link_person_phone_one`,user_basic_msg.`link_person_relation_one`,
+            user_basic_msg.`link_person_name_two`,user_basic_msg.`link_person_phone_two`,user_basic_msg.`link_person_relation_two`,user_basic_msg.`gmt_datetime` gmt_datetime1,
+            user_basic_msg.`upt_datetime` upt_datetime1,user_basic_msg.`user_id`,`user`.`user_name`,`user`.`uuid` uuids,`user`.`head_img`,`user`.`phone`,`user`.`money`,`user`.`user_type`,
+            `user`.`auth_status`,`user`.`token`,`user`.`status`,`user`.`auth_score`,`user`.`phone_sign`,`user`.`is_pay`,user_basic_msg.`status` status1
+        FROM `user_basic_msg`,`user`
+        WHERE user_basic_msg.`user_id`=`user`.`id`
+        <if test="phone != null and phone != ''">
+            AND  `user`.`phone` LIKE CONCAT(CONCAT('%',#{phone}),'%')
+        </if>
+        <if test="realName != null and realName != ''">
+            AND  `user`.`user_name` LIKE CONCAT(CONCAT('%',#{realName}),'%')
+        </if>
+        <if test="status != null and status != -1">
+            AND  user_basic_msg.status = #{status}
+        </if>  ORDER BY user_basic_msg.gmt_datetime DESC
+        LIMIT ${pageNo},${pageSize}
+    </select>
+
+    <select id="selectOneDetails" parameterType="String" resultMap="selectByPageResultMap">
+        SELECT
+            user_basic_msg.`id`,user_basic_msg.`marry`,user_basic_msg.`study`,user_basic_msg.`province`,user_basic_msg.`city`,user_basic_msg.`county`,user_basic_msg.`area_code`,
+            user_basic_msg.`address_details`,user_basic_msg.`link_person_name_one`,user_basic_msg.`link_person_phone_one`,user_basic_msg.`link_person_relation_one`,
+            user_basic_msg.`link_person_name_two`,user_basic_msg.`link_person_phone_two`,user_basic_msg.`link_person_relation_two`,user_basic_msg.`gmt_datetime` gmt_datetime1,
+            user_basic_msg.`upt_datetime` upt_datetime1,user_basic_msg.`user_id`,`user`.`user_name`,`user`.`uuid` uuids,`user`.`head_img`,`user`.`phone`,`user`.`money`,`user`.`user_type`,
+            `user`.`auth_status`,`user`.`token`,`user`.`status`,`user`.`auth_score`,`user`.`phone_sign`,`user`.`is_pay`
+        FROM `user_basic_msg`,`user`
+        WHERE user_basic_msg.`user_id`=`user`.`id`
+        AND user_basic_msg.id=#{id}
+    </select>
+
+    <select id="selectOneDetailsByUserId" parameterType="String" resultMap="selectByPageResultMap">
+        SELECT
+        user_basic_msg.`id`,user_basic_msg.`marry`,user_basic_msg.`study`,user_basic_msg.`province`,user_basic_msg.`city`,user_basic_msg.`county`,user_basic_msg.`area_code`,
+        user_basic_msg.`address_details`,user_basic_msg.`link_person_name_one`,user_basic_msg.`link_person_phone_one`,user_basic_msg.`link_person_relation_one`,
+        user_basic_msg.`link_person_name_two`,user_basic_msg.`link_person_phone_two`,user_basic_msg.`link_person_relation_two`,user_basic_msg.`gmt_datetime` gmt_datetime1,
+        user_basic_msg.`upt_datetime` upt_datetime1,user_basic_msg.`user_id`,`user`.`user_name`,`user`.`uuid` uuids,`user`.`head_img`,`user`.`phone`,`user`.`money`,`user`.`user_type`,
+        `user`.`auth_status`,`user`.`token`,`user`.`status`,`user`.`auth_score`,`user`.`phone_sign`,`user`.`is_pay`
+        FROM `user_basic_msg`,`user`
+        WHERE user_basic_msg.`user_id`=`user`.`id`
+        AND `user`.id=#{id}
+    </select>
+
+    <select id="selectDetailsByUserId" parameterType="String" resultMap="selectByPageResultMap">
+        SELECT
+        user_basic_msg.`id`,user_basic_msg.`marry`,user_basic_msg.`study`,user_basic_msg.`province`,user_basic_msg.`city`,user_basic_msg.`county`,user_basic_msg.`area_code`,
+        user_basic_msg.`address_details`,user_basic_msg.`link_person_name_one`,user_basic_msg.`link_person_phone_one`,user_basic_msg.`link_person_relation_one`,
+        user_basic_msg.`link_person_name_two`,user_basic_msg.`link_person_phone_two`,user_basic_msg.`link_person_relation_two`,user_basic_msg.`gmt_datetime` gmt_datetime1,
+        user_basic_msg.`upt_datetime` upt_datetime1,user_basic_msg.`user_id`,`user`.`user_name`,`user`.`uuid` uuids,`user`.`head_img`,`user`.`phone`,`user`.`money`,`user`.`user_type`,
+        `user`.`auth_status`,`user`.`token`,`user`.`status`,`user`.`auth_score`,`user`.`phone_sign`,`user`.`is_pay`
+        FROM `user_basic_msg`,`user`
+        WHERE user_basic_msg.`user_id`=`user`.`id`
+        AND `user`.id=#{id}
+    </select>
+
+    <select id="selectDetailsById" parameterType="String" resultMap="selectByPageResultMap">
+        SELECT
+        user_basic_msg.`id`,user_basic_msg.`marry`,user_basic_msg.`study`,user_basic_msg.`province`,user_basic_msg.`city`,user_basic_msg.`county`,user_basic_msg.`area_code`,
+        user_basic_msg.`address_details`,user_basic_msg.`link_person_name_one`,user_basic_msg.`link_person_phone_one`,user_basic_msg.`link_person_relation_one`,
+        user_basic_msg.`link_person_name_two`,user_basic_msg.`link_person_phone_two`,user_basic_msg.`link_person_relation_two`,user_basic_msg.`gmt_datetime` gmt_datetime1,
+        user_basic_msg.`upt_datetime` upt_datetime1,user_basic_msg.`user_id`,`user`.`user_name`,`user`.`uuid` uuids,`user`.`head_img`,`user`.`phone`,`user`.`money`,`user`.`user_type`,
+        `user`.`auth_status`,`user`.`token`,`user`.`status`,`user`.`auth_score`,`user`.`phone_sign`,`user`.`is_pay`
+        FROM `user_basic_msg`,`user`
+        WHERE user_basic_msg.`user_id`=`user`.`id`
+        AND `user_basic_msg`.id=#{id}
+    </select>
+
+    <select id="selectCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM `user_basic_msg`,`user`
+        WHERE user_basic_msg.`user_id`=`user`.`id`
+        <if test="phone != null and phone != ''">
+            AND  `user`.`phone` LIKE CONCAT(CONCAT('%',#{phone}),'%')
+        </if>
+        <if test="realName != null and realName != ''">
+            AND  `user`.`user_name` LIKE CONCAT(CONCAT('%',#{realName}),'%')
+        </if>
+        <if test="status != null and status != -1">
+            AND  user_basic_msg.status = #{status}
+        </if>
+    </select>
+
+
+
+    <sql id="mColumnsSql">
+        id AS id,
+        user_id AS userId,
+        marry AS marry,
+        study AS study,
+        province AS province,
+        city AS city,
+        county AS county,
+        area_code AS areaCode,
+        address_details AS addressDetails,
+        link_person_name_one AS linkPersonNameOne,
+        link_person_phone_one AS linkPersonPhoneOne,
+        link_person_relation_one AS linkPersonRelationOne,
+        link_person_name_two AS linkPersonNameTwo,
+        link_person_phone_two AS linkPersonPhoneTwo,
+        link_person_relation_two AS linkPersonRelationTwo,
+        gmt_datetime AS gmtDatetime,
+        upt_datetime AS uptDatetime
+    </sql>
+</mapper>

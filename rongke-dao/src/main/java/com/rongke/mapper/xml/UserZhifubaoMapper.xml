@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.UserZhifubaoMapper">
+
+    <resultMap type="com.rongke.model.UserZhifubao" id="mUserZhifubao" autoMapping="true">
+    </resultMap>
+
+    <sql id="mColumnsSql">
+        id AS id,
+        user_id AS userId,
+        user_mobile AS userMobile,
+        identity_code AS identityCode,
+        user_name AS userName,
+        real_name AS realName,
+        verified AS verified,
+        email AS email,
+        assets_yu_e AS assetsYuE,
+        assets_yu_e_bao AS assetsYuEbao,
+        huabei_quota AS huabeiQuota,
+        huabei_balance AS huabeiBalance,
+        huabei_next_repayment_amount AS huabeiNextRepaymentAmount,
+        gmt_datetime AS gmtDatetime,
+        upt_datetime AS uptDatetime,
+        ali_number AS aliNumber,
+        ali_pwd AS aliPwd
+
+    </sql>
+
+    <resultMap id="userZhifubaoAuth" type="com.rongke.model.User">
+            <id property="id" column="id" />
+            <result property="userName" column="userName"/>
+            <result property="phone" column="phone"/>
+            <result property="authStatus" column="authStatus"/>
+            <result property="money" column="money"/>
+            <result property="adminAuditId" column="adminAuditId"/>
+        <association property="userZhifubao" javaType="com.rongke.model.UserZhifubao">
+            <result property="userId" column="id" />
+            <result property="assetsYuE" column="assetsYuE" />
+            <result property="assetsYuEbao" column="assetsYuEbao" />
+            <result property="huabeiQuota" column="huabeiQuota"  />
+            <result property="huabeiBalance" column="huabeiBalance"  />
+            <result property="jiebeiQuota" column="jiebeiQuota"  />
+            <result property="zhimaPoint" column="zhimaPoint"  />
+            <result property="aliNumber" column="aliNumber"/>
+            <result property="aliPwd" column="aliPwd"/>
+        </association>
+        <association property="userAuth" javaType="com.rongke.model.UserAuth">
+            <result property="userId" column="userId"/>
+            <result property="baiscAuth" column="baiscAuth"/>
+            <result property="bankAuth" column="bankAuth"/>
+            <result property="phoneAuth" column="phoneAuth"/>
+            <result property="identityAuth" column="identityAuth"/>
+        </association>
+
+
+    </resultMap>
+
+
+    <sql id="mColumnsSql1">
+        user_zhifubao.id AS id,
+        user_zhifubao.user_id AS userId,
+        user_zhifubao.assets_yu_e AS assetsYuE,
+        user_zhifubao.assets_yu_ebao AS  assetsYuEbao,
+        user_zhifubao.huabei_quota AS huabeiQuota,
+        user_zhifubao.huabei_balance AS huabeiBalance,
+        user_zhifubao.jiebei_quota AS jiebeiQuota,
+        user_zhifubao.zhima_point AS zhimaPoint,
+        user_zhifubao.ali_number AS aliNumber,
+        user_zhifubao.ali_pwd AS aliPwd,
+        user.id AS userId,
+        user.user_name AS userName,
+        user.phone AS phone,
+        user.auth_status AS authStatus,
+        user.money AS money,
+        user.admin_audit_id AS adminAuditId,
+        user_auth.user_id AS userId,
+        user_auth.baisc_auth AS baiscAuth,
+        user_auth.bank_auth AS bankAuth,
+        user_auth.phone_auth AS  phoneAuth,
+        user_auth.identity_auth AS identityAuth
+
+
+    </sql>
+
+    <select id="selectAll" parameterType="map" resultMap="userZhifubaoAuth">
+        SELECT <include refid="mColumnsSql1"/> FROM user,user_zhifubao,user_auth
+        WHERE user.id=user_zhifubao.user_id AND user.id=user_auth.user_id
+        <if test="phone!=null">
+            AND user.phone=#{phone}
+        </if>
+        <if test="authStatus!=null and authStatus!=''">
+            AND user.auth_status=#{authStatus}
+        </if>
+            AND user_auth.zhifubao_auth=1
+        ORDER BY user_zhifubao.gmt_datetime DESC
+        LIMIT ${pageNo},${pageSize}
+
+
+    </select>
+
+
+    <select id="selectMyAll" parameterType="map" resultMap="userZhifubaoAuth">
+        SELECT <include refid="mColumnsSql1"/> FROM user,user_zhifubao,user_auth
+        WHERE user.id=user_zhifubao.user_id AND user.id=user_auth.user_id
+        <if test="phone!=null">
+            AND user.phone=#{phone}
+        </if>
+        <if test="authStatus!=null and authStatus!=''">
+            AND user.auth_status=#{authStatus}
+        </if>
+        <if test="adminAuditId!=null and adminAuditId!=''">
+            AND user.admin_audit_id=#{adminAuditId}
+        </if>
+
+        ORDER BY user_zhifubao.gmt_datetime DESC
+        LIMIT ${pageNo},${pageSize}
+
+
+    </select>
+    <select id="selectMyCountNum" parameterType="map" resultType="int">
+        SELECT sum(1) FROM user,user_zhifubao,user_auth
+        WHERE user.id=user_zhifubao.user_id AND user.id=user_auth.user_id
+        <if test="phone!=null">
+            AND user.phone=#{phone}
+        </if>
+        <if test="authStatus!=null and authStatus!=''">
+            AND user.auth_status=#{authStatus}
+        </if>
+        <if test="adminAuditId!=null and adminAuditId!=''">
+            AND user.admin_audit_id=#{adminAuditId}
+        </if>
+
+    </select>
+
+
+
+    <select id="selectCountNum" parameterType="map" resultType="int">
+        SELECT sum(1) FROM user,user_zhifubao,user_auth
+        WHERE user.id=user_zhifubao.user_id AND user.id=user_auth.user_id
+        <if test="phone!=null">
+            AND user.phone=#{phone}
+        </if>
+        <if test="authStatus!=null and authStatus!=''">
+            AND user.auth_status=#{authStatus}
+        </if>
+           AND user_auth.zhifubao_auth=1
+
+    </select>
+
+
+
+    <select id="selectMyTemporaryAll" parameterType="map" resultMap="userZhifubaoAuth">
+        SELECT <include refid="mColumnsSql1"/> FROM user,user_zhifubao,user_auth
+        WHERE user.id=user_zhifubao.user_id AND user.id=user_auth.user_id
+        <if test="phone!=null">
+            AND user.phone=#{phone}
+        </if>
+
+            AND user.auth_status=2
+
+        <if test="adminAuditId!=null and adminAuditId!=''">
+            AND user.admin_audit_id=#{adminAuditId}
+        </if>
+
+        ORDER BY user_zhifubao.gmt_datetime DESC
+        LIMIT ${pageNo},${pageSize}
+
+
+    </select>
+    <select id="selectMyTemporaryNum" parameterType="map" resultType="int">
+        SELECT sum(1) FROM user,user_zhifubao,user_auth
+        WHERE user.id=user_zhifubao.user_id AND user.id=user_auth.user_id
+        <if test="phone!=null">
+            AND user.phone=#{phone}
+        </if>
+
+            AND user.auth_status=2
+
+        <if test="adminAuditId!=null and adminAuditId!=''">
+            AND user.admin_audit_id=#{adminAuditId}
+        </if>
+
+    </select>
+
+
+
+
+    <select id="selectAllTemporary" parameterType="map" resultMap="userZhifubaoAuth">
+        SELECT <include refid="mColumnsSql1"/> FROM user,user_zhifubao,user_auth
+        WHERE user.id=user_zhifubao.user_id AND user.id=user_auth.user_id
+        <if test="phone!=null">
+            AND user.phone=#{phone}
+        </if>
+
+            AND user.auth_status=2
+
+        <if test="adminAuditId!=null and adminAuditId!=''">
+            AND user.admin_audit_id is NOT  NULL
+        </if>
+
+        ORDER BY user_zhifubao.gmt_datetime DESC
+        LIMIT ${pageNo},${pageSize}
+
+
+    </select>
+    <select id="selectAllTemporaryNum" parameterType="map" resultType="int">
+        SELECT sum(1) FROM user,user_zhifubao,user_auth
+        WHERE user.id=user_zhifubao.user_id AND user.id=user_auth.user_id
+        <if test="phone!=null">
+            AND user.phone=#{phone}
+        </if>
+
+            AND user.auth_status=2
+
+        <if test="adminAuditId!=null and adminAuditId!=''">
+            AND user.admin_audit_id IS NOT  NULL
+        </if>
+
+    </select>
+
+
+
+
+</mapper>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.ThirdCatalogueMapper">
+
+    <resultMap type="com.rongke.model.ThirdCatalogue" id="mThirdCatalogue" autoMapping="true">
+        <association property="second_id" javaType="com.rongke.model.SecondCatalogue" autoMapping="true" />
+    </resultMap>
+
+
+    <resultMap id="findByPageResultMap" type="com.rongke.model.ThirdCatalogue">
+        <id property="id" column="id3"/>
+        <result property="title" column="title3"/>
+        <association property="second" javaType="com.rongke.model.SecondCatalogue">
+            <id property="id" column="id2"/>
+            <result property="title" column="title2"/>
+           <association property="first" javaType="com.rongke.model.FirstCatalogue">
+               <id property="id" column="id1"/>
+               <result property="title" column="title1"/>
+           </association>
+        </association>
+    </resultMap>
+
+    <select id="findByPage" parameterType="java.util.Map" resultMap="findByPageResultMap">
+        SELECT
+        first_catalogue.`id` AS id1,
+        first_catalogue.`title` AS title1,
+        second_catalogue.`id` AS id2,
+        second_catalogue.`title` AS title2,
+        third_catalogue.`id` AS id3,
+        third_catalogue.`title` AS title3
+        FROM `third_catalogue`,`first_catalogue`,`second_catalogue`
+        WHERE third_catalogue.`second_id`=second_catalogue.`id`
+        AND second_catalogue.`first_id`=first_catalogue.`id`
+        <if test="firstTitle != null and firstTitle != ''">
+            AND  `first_catalogue`.`title` LIKE CONCAT(CONCAT('%',#{firstTitle}),'%')
+        </if>
+        <if test="secondTitle != null and secondTitle != ''">
+            AND  `second_catalogue`.`title` LIKE CONCAT(CONCAT('%',#{secondTitle}),'%')
+        </if>
+        <if test="thirdTitle != null and thirdTitle != ''">
+            AND  `third_catalogue`.`title` LIKE CONCAT(CONCAT('%',#{thirdTitle}),'%')
+        </if>
+        LIMIT ${pageNo},${pageSize}
+    </select>
+
+
+    <select id="findAll" resultMap="findByPageResultMap">
+        SELECT
+        first_catalogue.`id` AS id1,
+        first_catalogue.`title` AS title1,
+        second_catalogue.`id` AS id2,
+        second_catalogue.`title` AS title2,
+        third_catalogue.`id` AS id3,
+        third_catalogue.`title` AS title3
+        FROM `third_catalogue`,`first_catalogue`,`second_catalogue`
+        WHERE third_catalogue.`second_id`=second_catalogue.`id`
+        AND second_catalogue.`first_id`=first_catalogue.`id`
+    </select>
+
+    <select id="findAllSecond" resultMap="findByPageResultMap">
+        SELECT
+        first_catalogue.`id` AS id1,
+        first_catalogue.`title` AS title1,
+        second_catalogue.`id` AS id2,
+        second_catalogue.`title` AS title2,
+        third_catalogue.`id` AS id3,
+        third_catalogue.`title` AS title3
+        FROM `third_catalogue`,`first_catalogue`,`second_catalogue`
+        WHERE third_catalogue.`second_id`=second_catalogue.`id`
+        AND second_catalogue.`first_id`=first_catalogue.`id`
+        GROUP BY second_catalogue.`id`
+    </select>
+
+    <select id="findByPageCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM `third_catalogue`,`first_catalogue`,`second_catalogue`
+        WHERE third_catalogue.`second_id`=second_catalogue.`id`
+        AND second_catalogue.`first_id`=first_catalogue.`id`
+        <if test="firstTitle != null and firstTitle != ''">
+            AND  `first_catalogue`.`title` LIKE CONCAT(CONCAT('%',#{firstTitle}),'%')
+        </if>
+        <if test="secondTitle != null and secondTitle != ''">
+            AND  `second_catalogue`.`title` LIKE CONCAT(CONCAT('%',#{secondTitle}),'%')
+        </if>
+        <if test="thirdTitle != null and thirdTitle != ''">
+            AND  `third_catalogue`.`title` LIKE CONCAT(CONCAT('%',#{thirdTitle}),'%')
+        </if>
+    </select>
+
+
+
+    <sql id="mColumnsSql">
+        id AS id,
+        tilte AS tilte,
+        second_id AS secondId
+    </sql>
+</mapper>

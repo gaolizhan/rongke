@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.YouDunLogMapper">
+
+
+    <resultMap type="com.rongke.model.YouDunLog" id="rmYouDunLog">
+        <id property="id" column="id" />
+        <result property="userId" column="userId"/>
+        <result property="identityOrderNo" column="identityOrderNo"/>
+        <result property="createdTime" column="createdTime"/>
+
+    </resultMap>
+
+    <resultMap type="com.rongke.model.YouDunLog" id="mYouDunLog">
+        <id property="id" column="YouDunLog_id" />
+        <result property="userId" column="YouDunLog_userId"/>
+        <result property="identityOrderNo" column="YouDunLog_identityOrderNo"/>
+        <result property="createdTime" column="YouDunLog_createdTime"/>
+
+    </resultMap>
+
+    <sql id="mYouDunLogPkSql">
+        you_dun_log.id AS YouDunLog_id,
+        you_dun_log.user_id AS YouDunLog_userId,
+        you_dun_log.identity_order_no AS YouDunLog_identityOrderNo,
+        you_dun_log.created_time AS YouDunLog_createdTime
+    </sql>
+
+    <sql id="mYouDunLogSql">
+        id AS id,
+        user_id AS userId,
+        identity_order_no AS identityOrderNo,
+        created_time AS createdTime
+    </sql>
+
+    <select id="selectByCondition" parameterType="YouDunLog" resultMap="rmYouDunLog">
+    select
+    <include refid="mYouDunLogSql"></include>
+    from you_dun_log
+    <where>
+        <if test="id!= null">
+            AND id=#{id}
+        </if>
+        <if test="userId!= null">
+            AND user_id=#{userId}
+        </if>
+        <if test="identityOrderNo!= null">
+            AND identity_order_no=#{identityOrderNo}
+        </if>
+        <if test="createdTime!= null">
+            AND created_time=#{createdTime}
+        </if>
+    </where>
+    </select>
+    </mapper>

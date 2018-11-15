@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.TbReceiverMapper">
+
+    <resultMap type="com.rongke.model.TbReceiver" id="mTbReceiver" autoMapping="true">
+    </resultMap>
+
+    <sql id="mColumnsSql">
+        id AS id,
+        user_id AS userId,
+        name AS name,
+        area AS area,
+        address AS address,
+        mobile AS mobile,
+        telephone AS telephone,
+        default_area AS defaultArea,
+        zip_code AS zipCode,
+        gmt_datetime AS gmtDatetime
+    </sql>
+</mapper>

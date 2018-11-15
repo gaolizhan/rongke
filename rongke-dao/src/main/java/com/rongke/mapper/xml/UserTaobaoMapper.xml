@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.UserTaobaoMapper">
+
+    <resultMap type="com.rongke.model.UserTaobao" id="mUserTaobao" autoMapping="true">
+        <association property="user_id" javaType="com.rongke.model.User" autoMapping="true" />
+    </resultMap>
+
+    <sql id="mColumnsSql">
+        id AS id,
+        user_id AS userId,
+        name AS name,
+        gender AS gender,
+        mobile AS mobile,
+        nick_name AS nickName,
+        gmt_datetime AS gmtDatetime,
+        upt_datetime AS uptDatetime
+    </sql>
+</mapper>

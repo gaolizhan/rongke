@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+
+    <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+                   value="%d [%t] %p - %m%n"/>
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="DEBUG"/>
+            <param name="LevelMax" value="FATAL"/>
+        </filter>
+    </appender>
+
+    <appender name="PROJECT" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="file" value="${rongke.log4j.path}/rongke.log"/>
+        <param name="append" value="true"/>
+        <param name="encoding" value="UTF-8"/>
+        <param name="threshold" value="info"/>
+        <param name="datePattern" value="'.'yyyy-MM-dd'.log'"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d [%X{requestURIWithQueryString}] %-5p %c{2} - %m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="PROJECT-ERROR" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="file" value="${rongke.log4j.path}/rongke-error.log"/>
+        <param name="append" value="true"/>
+        <param name="encoding" value="UTF-8"/>
+        <param name="threshold" value="error"/>
+        <param name="datePattern" value="'.'yyyy-MM-dd'.log'"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d [%X{requestURIWithQueryString}] %-5p %c{2} - %m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="PROJECT-DEBUG" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="file" value="${rongke.log4j.path}/rongke-debug.log"/>
+        <param name="append" value="true"/>
+        <param name="encoding" value="UTF-8"/>
+        <param name="threshold" value="debug"/>
+        <param name="datePattern" value="'.'yyyy-MM-dd'.log'"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d [%X{requestURIWithQueryString}] %-5p %c{2} - %m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="IBATIS" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="file" value="${rongke.log4j.path}/rongke-ibatis.log"/>
+        <param name="append" value="true"/>
+        <param name="encoding" value="UTF-8"/>
+        <param name="threshold" value="debug"/>
+        <param name="datePattern" value="'.'yyyy-MM-dd'.log'"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d [%X{requestURIWithQueryString}] %-5p %c{2} - %m%n"/>
+        </layout>
+    </appender>
+    <logger name="org.apache.ibatis" additivity="false">
+        <level value="${rongke.log4j.level}"/>
+        <appender-ref ref="IBATIS"/>
+    </logger>
+
+    <logger name="com.rongke.mapper" additivity="false">
+        <level value="${rongke.log4j.level}"/>
+        <appender-ref ref="IBATIS"/>
+    </logger>
+    <logger name="java.sql" additivity="false">
+        <level value="${rongke.log4j.level}"/>
+        <appender-ref ref="IBATIS"/>
+    </logger>
+
+    <root>
+        <level value="${rongke.log4j.level}"/>
+        <appender-ref ref="PROJECT"/>
+        <appender-ref ref="PROJECT-DEBUG"/>
+        <appender-ref ref="PROJECT-ERROR"/>
+        <appender-ref ref="STDOUT"/>
+    </root>
+</log4j:configuration>

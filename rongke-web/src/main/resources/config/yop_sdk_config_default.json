@@ -1,0 +1,19 @@
+{
+  "yop_public_key": [
+    {
+      "store_type": "string",
+      "cert_type": "RSA2048",
+      "value": ""
+    }
+  ],
+  "isv_private_key": [
+      {
+        "store_type": "string",
+        "cert_type": "RSA2048",
+        "value":""
+      }
+  ],
+
+  "default_protocol_version": "yop-auth-v2",
+  "sdk_version": "1.1.0"
+}

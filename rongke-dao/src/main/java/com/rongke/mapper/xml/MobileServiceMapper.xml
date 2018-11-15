@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.MobileServiceMapper">
+    <resultMap type="com.rongke.model.TongdunLog" id="tongdunLogMap" >
+        <result property="id" column="id"/>
+        <result property="success" column="success"/>
+        <result property="reasonCode" column="reason_code"/>
+        <result property="reasonDesc" column="reason_desc"/>
+        <result property="reportId" column="report_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="submitTime" column="submit_time"/>
+    </resultMap>
+    <select id="selectListForJob" resultMap="tongdunLogMap">
+        SELECT * FROM `tongdun_log` WHERE submit_time &lt; date_sub(NOW(),interval 1 day) AND submit_time &gt;= date_sub(NOW(),interval 2 day)
+    </select>
+</mapper>

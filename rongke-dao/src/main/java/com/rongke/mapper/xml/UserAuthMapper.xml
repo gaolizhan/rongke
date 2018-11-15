@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.UserAuthMapper">
+
+    <resultMap type="com.rongke.model.UserAuth" id="mUserAuth" autoMapping="true">
+        <association property="user_id" javaType="com.rongke.model.User" autoMapping="true"/>
+    </resultMap>
+
+    <sql id="mColumnsSql">
+        id AS id,
+        user_id AS userId,
+        baisc_auth AS baiscAuth,
+        bank_auth AS bankAuth,
+        phone_auth AS phoneAuth,
+        identity_auth AS identityAuth,
+        zhima_auth AS zhimaAuth,
+        shebao_auth AS shebaoAuth,
+        gongjijin_auth AS gongjijinAuth,
+        zhifubao_auth AS zhifubaoAuth,
+        jindong_auth AS jindongAuth,
+        taobao_auth AS taobaoAuth,
+        gmt_datetime AS gmtDatetime,
+        upt_datetime AS uptDatetime，
+        auth_fee AS authFee
+    </sql>
+
+    <resultMap id="userAuthMap" type="com.rongke.model.UserAuth">
+        <id property="id" column="id"/>
+        <result property="userId" column="userId" jdbcType="INTEGER"/>
+        <result property="baiscAuth" column="baiscAuth" jdbcType="INTEGER"/>
+        <result property="bankAuth" column="bankAuth" jdbcType="INTEGER"/>
+        <result property="phoneAuth" column="phoneAuth" jdbcType="INTEGER"/>
+        <result property="identityAuth" column="identityAuth" jdbcType="INTEGER"/>
+        <result property="taobaoAuth" column="taobaoAuth" jdbcType="INTEGER"/>
+        <result property="zhifubaoAuth" column="zhifubaoAuth" jdbcType="INTEGER"/>
+        <association property="user" javaType="com.rongke.model.User">
+            <id property="id" column="userId"/>
+            <result property="userName" column="userName"/>
+            <result property="phone" column="phone"/>
+        </association>
+    </resultMap>
+
+    <sql id="mColumnsSql1">
+        user_auth.id AS id,
+        user_auth.baisc_auth AS baiscAuth,
+        user_auth.bank_auth AS bankAuth,
+        user_auth.phone_auth AS phoneAuth,
+        user_auth.identity_auth AS identityAuth,
+        user_auth.taobao_auth AS taobaoAuth,
+        user_auth.zhifubao_auth AS zhifubaoAuth,
+        user.id AS userId,
+        `user`.phone AS phone,
+        `user`.`user_name` AS userName
+    </sql>
+
+
+
+    <select id="selectAll" parameterType="map" resultMap="userAuthMap">
+        select   <include refid="mColumnsSql1"/> FROM
+        user,user_auth WHERE user.id=user_auth.user_id
+        <if test="userName!=null">
+            AND user.user_name=#{userName}
+        </if>
+        <if test="phone!=null" >
+            AND user.phone=#{phone}
+        </if>
+        ORDER BY user_auth.gmt_datetime DESC
+        LIMIT ${pageNo},${pageSize}
+    </select>
+
+
+</mapper>

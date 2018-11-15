@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.CollectionRecordMapper">
+<select id="selectAdminLoan" parameterType="Long" resultType="com.rongke.model.CollectionRecord">
+    SELECT <include refid="mColumnsSql"/> FROM `collection_record` where admin_id = #{id} group by order_id	;
+</select>
+    <sql id="mColumnsSql">
+        id AS id,
+        admin_id AS adminId,
+        order_id AS orderId,
+        text AS text,
+        create_time AS createTime
+    </sql>
+
+
+</mapper>

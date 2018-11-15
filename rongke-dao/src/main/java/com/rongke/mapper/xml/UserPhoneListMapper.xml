@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.UserPhoneListMapper">
+
+    <resultMap type="com.rongke.model.UserPhoneList" id="mUserPhoneList" autoMapping="true">
+        <association property="user_id" javaType="com.rongke.model.User" autoMapping="true" />
+    </resultMap>
+
+    <sql id="mColumnsSql">
+        id AS id,
+        user_id AS userId,
+        name AS name,
+        phone AS phone,
+        link AS link,
+        belong_area AS belongArea,
+        call_times AS callTimes,
+        call_time AS callTime,
+        gmt_datetime AS gmtDatetime,
+        upt_datetime AS uptDatetime,
+        call_count_active AS callCountActive,
+        call_count_passive AS callCountPassive
+    </sql>
+
+    <insert id="saveCall" parameterType="java.util.List">
+        insert into user_phone_list (user_id,name,phone,belong_area,call_times,call_time) values
+        <foreach collection ="list" item="b" index= "index" separator =",">
+            (
+            #{b.userId},
+            #{b.name},
+            #{b.phone},
+            #{b.belongArea},
+            #{b.callTimes},
+            #{b.callTime}
+            )
+        </foreach>
+    </insert>
+
+    <select id="selectUserPhoneList" parameterType="map" resultType="com.rongke.model.UserPhoneList">
+
+       SELECT <include refid="mColumnsSql"/>  , if(name="未知用户",0,1) AS t from user_phone_list
+        where user_id=#{userId}
+        <if test="phone!=null and phone!=''" >
+          AND user_phone_list.phone like #{phone}
+        </if>
+        ORDER BY  t desc,call_times desc
+        LIMIT ${pageNo},${pageSize}
+
+    </select>
+
+
+    <select id="selectUserPhoneNum" parameterType="map" resultType="int">
+
+        SELECT COUNT(1) from user_phone_list
+         where user_id=#{userId}
+        <if test="phone!=null and phone!=''">
+            AND user_phone_list.phone like #{phone}
+        </if>
+
+    </select>
+
+    <select id="getPhoneListByUserId" parameterType="long" resultType="string">
+        SELECT phone from user_phone_list
+        where user_id=#{userId}
+    </select>
+
+
+</mapper>

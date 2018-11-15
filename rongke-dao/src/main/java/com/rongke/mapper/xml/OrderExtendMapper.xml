@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.OrderExtendMapper">
+
+    <resultMap type="com.rongke.model.OrderExtend" id="mOrderExtend" autoMapping="true">
+        <association property="order_id" javaType="com.rongke.model.LoanOrder" autoMapping="true" />
+    </resultMap>
+
+    <resultMap type="com.rongke.model.OrderExtend" id="myOrderExtend" autoMapping="true">
+    </resultMap>
+
+    <sql id="mColumnsSql">
+        oe.id AS id,
+        oe.order_id AS orderId,
+        oe.extend_days AS extendDays,
+        oe.extend_money AS extendMoney,
+        oe.extend_lianlian_num AS extendLianlianNum,
+        oe.repayment_no AS repaymentNo,
+        oe.gmt_datetime AS gmtDatetime,
+        oe.upt_datetime AS uptDatetime,
+        oe.status AS status,
+        u.user_name AS userName,
+        u.phone AS phone
+
+    </sql>
+    <select id="getPage"  resultMap="myOrderExtend" parameterType="map">
+        select <include refid="mColumnsSql"/> from order_extend oe left join loan_order lo on oe.order_id = lo.id
+        left join `user` u on lo.user_id =u.id
+        <where>
+            <if test="phone!= null and phone!=''">
+                AND u.phone=#{phone}
+            </if>
+            <if test="userName!= null and userName!=''">
+                AND u.user_name=#{userName}
+            </if>
+        </where>
+        ORDER BY oe.gmt_datetime DESC
+        LIMIT ${pageNo},${pageSize}
+    </select>
+
+    <select id="getPageCount"  parameterType="map" resultType="int">
+        select count(1) from order_extend oe left join loan_order lo on oe.order_id = lo.id
+        left join `user` u on lo.user_id =u.id
+        <where>
+            <if test="phone!= null and phone!=''">
+                AND u.phone=#{phone}
+            </if>
+            <if test="userName!= null and userName!=''">
+                AND u.user_name=#{userName}
+            </if>
+        </where>
+    </select>
+
+    <select id="getExtendTotalAmount"  parameterType="map" resultType="string">
+        select sum(extend_money) from order_extend oe left join loan_order lo on oe.order_id = lo.id
+        left join `user` u on lo.user_id =u.id
+        <where>
+            oe.status = 1
+            <if test="phone!= null and phone!=''">
+                AND u.phone=#{phone}
+            </if>
+            <if test="userName!= null and userName!=''">
+                AND u.user_name=#{userName}
+            </if>
+        </where>
+    </select>
+</mapper>

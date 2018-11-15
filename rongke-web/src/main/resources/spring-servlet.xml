@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--开启springMVC注解模式-->
+    <mvc:annotation-driven>
+        <mvc:message-converters register-defaults="false">
+            <bean id="mappingJacksonHttpMessageConverter"
+                  class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>text/json;charset=UTF-8</value>
+                        <value>text/html;charset=UTF-8</value>
+                        <value>application/json;charset=UTF-8</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+    <bean
+            class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/>
+    <bean
+            class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"/>
+
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+
+    <!-- 自动扫描，完成bean创建和自动依赖注入-->
+    <context:component-scan base-package="com.rongke"/>
+
+    <!--避免IE执行AJAX时，返回JSON出现下载文件 -->
+    <!--    <bean id="mappingJacksonHttpMessageConverter"
+              class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+            <property name="supportedMediaTypes">
+                <list>
+                    <value>text/json;charset=UTF-8</value>
+                    <value>text/html;charset=UTF-8</value>
+                    <value>application/json;charset=UTF-8</value>
+                </list>
+            </property>
+        </bean>-->
+
+
+    <!--启动SpringMVC的注解功能，完成请求和注解POJO的映射-->
+    <!--    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+            <property name="messageConverters">
+                <list>
+                    <ref bean="mappingJacksonHttpMessageConverter"/>  &lt;!&ndash;JSON转换器&ndash;&gt;
+                </list>
+            </property>
+        </bean>-->
+
+
+    <!-- 对模型视图名称的解析,即在模型视图名称添加前后缀 -->
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!-- 查找视图页面的前缀和后缀 -->
+        <property name="prefix" value="/"/>
+        <property name="suffix" value=".html"/>
+    </bean>
+
+    <!--对上传文件的支持，springMVC其实是用common-upload来实现 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!--设置上传文件的最大值,这里是字节-->
+        <property name="maxUploadSize" value="100000000"></property>
+        <property name="defaultEncoding" value="utf-8"></property>
+    </bean>
+    <bean id="commonConfigListener" class="com.rongke.web.config.ConfigListener"/>
+
+
+    <!-- 请求拦截器-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/*/*.html"/>
+            <bean class="com.rongke.interceptor.URLInterceptor"/>
+        </mvc:interceptor>
+        <!--接口权限拦截-->
+        <mvc:interceptor>
+            <mvc:mapping path="/api/**"/>
+            <bean class="com.rongke.interceptor.JurisdictionInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+    <!-- 总错误处理-->
+    <bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <!--<property name="defaultErrorView">
+            <value>/base/error</value>
+        </property>-->
+        <property name="defaultStatusCode">
+            <value>500</value>
+        </property>
+        <property name="warnLogCategory">
+            <value>org.springframework.web.servlet.handler.SimpleMappingExceptionResolver</value>
+        </property>
+    </bean>
+
+    <!--开始定时任务-->
+    <!--  -->
+    <bean id="simpleJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="TimeJob"/>
+        <!-- 要执行的方法名称 -->
+        <property name="targetMethod" value="printMessage"/>
+    </bean>
+
+
+    <!--每天定时触发  -->
+    <bean id="simpleTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="simpleJobDetail"/>
+        <property name="cronExpression" value="0 0 1 * * ?"/>
+    </bean>
+
+
+    <bean id="riskJob" class="com.rongke.web.quartz.RiskJob"></bean>
+    <bean id="riskJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <!-- 指定任务类 -->
+        <property name="targetObject" ref="riskJob"/>
+        <!-- 指定任务执行的方法 -->
+        <property name="targetMethod" value="execute"/>
+    </bean>
+    <bean id="riskJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="riskJobDetail"/>
+        <!-- 每1分钟运行一次 -->
+        <property name="cronExpression" value="0 */1 * * * ?"/>
+    </bean>
+
+    <!--还款提醒-->
+    <bean id="noticeRepaymentJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="noticeRepaymentJob" />
+        <property name="targetMethod" value="sendRepaymentMessage" />
+    </bean>
+    <bean id="noticeRepaymentTrigger"  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="noticeRepaymentJobDetail" />
+        <property name="cronExpression" value="0 0 18 * * ?" />
+    </bean>
+
+    <!--逾期提醒-->
+    <bean id="noticeExpireJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="noticeRepaymentJob" />
+        <property name="targetMethod" value="sendExpireMessage" />
+    </bean>
+    <bean id="noticeExpireTrigger"  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="noticeExpireJobDetail" />
+        <property name="cronExpression" value="0 40 10,17 * * ?" />
+    </bean>
+
+    <!---->
+    <bean id="noticeRepaymentJob" class="com.rongke.web.quartz.NoticeRepaymentJob">
+    </bean>
+
+    <!-- 触发器工厂，将所有的定时任务都注入工厂-->
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="jobDetails">
+            <list>
+                <ref bean="simpleJobDetail"/>
+                <ref bean="riskJobDetail"/>
+                <ref bean="noticeRepaymentJobDetail"/>
+                <ref bean="noticeExpireJobDetail"/>
+            </list>
+        </property>
+        <property name="triggers">
+            <list>
+                <ref bean="simpleTrigger"/>
+                <ref bean="riskJobTrigger"/>
+                <ref bean="noticeRepaymentTrigger"/>
+                <ref bean="noticeExpireTrigger"/>
+            </list>
+        </property>
+    </bean>
+    <!--定时任务结束-->
+
+
+    <!--静态资源配置-->
+    <mvc:default-servlet-handler/>
+
+</beans>

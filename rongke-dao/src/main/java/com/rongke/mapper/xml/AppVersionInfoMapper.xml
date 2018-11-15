@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.rongke.mapper.AppVersionInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.rongke.model.AppVersionInfo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="version_num" property="versionNum" jdbcType="VARCHAR" />
+    <result column="ios_url" property="iosUrl" jdbcType="VARCHAR" />
+    <result column="android_url" property="androidUrl" jdbcType="VARCHAR" />
+    <result column="forced_updating" property="forcedUpdating" jdbcType="BIT" />
+    <result column="source" property="source" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.rongke.model.AppVersionInfo" extends="BaseResultMap" >
+    <result column="update_content" property="updateContent" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, version_num, ios_url, android_url, forced_updating, source
+  </sql>
+  <sql id="Blob_Column_List" >
+    update_content
+  </sql>
+
+    <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from app_version_info
+    where id = #{id,jdbcType=BIGINT}
+    </select>
+
+  <select id="getLatestVersionInfo" resultMap="ResultMapWithBLOBs" parameterType="string" >
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from app_version_info
+    where source = #{source}
+    order by create_time desc
+    limit 1
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from app_version_info
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.rongke.model.AppVersionInfo" >
+    insert into app_version_info (id, create_time, version_num, 
+      ios_url, android_url, forced_updating, 
+      source, update_content)
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{versionNum,jdbcType=VARCHAR},
+      #{iosUrl,jdbcType=VARCHAR}, #{androidUrl,jdbcType=VARCHAR}, #{forcedUpdating,jdbcType=BIT}, 
+      #{source,jdbcType=VARCHAR}, #{updateContent,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.rongke.model.AppVersionInfo" >
+    insert into app_version_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="versionNum != null" >
+        version_num,
+      </if>
+      <if test="iosUrl != null" >
+        ios_url,
+      </if>
+      <if test="androidUrl != null" >
+        android_url,
+      </if>
+      <if test="forcedUpdating != null" >
+        forced_updating,
+      </if>
+      <if test="source != null" >
+        source,
+      </if>
+      <if test="updateContent != null" >
+        update_content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="versionNum != null" >
+        #{versionNum,jdbcType=VARCHAR},
+      </if>
+      <if test="iosUrl != null" >
+        #{iosUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="androidUrl != null" >
+        #{androidUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="forcedUpdating != null" >
+        #{forcedUpdating,jdbcType=BIT},
+      </if>
+      <if test="source != null" >
+        #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="updateContent != null" >
+        #{updateContent,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.rongke.model.AppVersionInfo" >
+    update app_version_info
+    <set >
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="versionNum != null" >
+        version_num = #{versionNum,jdbcType=VARCHAR},
+      </if>
+      <if test="iosUrl != null" >
+        ios_url = #{iosUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="androidUrl != null" >
+        android_url = #{androidUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="forcedUpdating != null" >
+        forced_updating = #{forcedUpdating,jdbcType=BIT},
+      </if>
+      <if test="source != null" >
+        source = #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="updateContent != null" >
+        update_content = #{updateContent,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.rongke.model.AppVersionInfo" >
+    update app_version_info
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      version_num = #{versionNum,jdbcType=VARCHAR},
+      ios_url = #{iosUrl,jdbcType=VARCHAR},
+      android_url = #{androidUrl,jdbcType=VARCHAR},
+      forced_updating = #{forcedUpdating,jdbcType=BIT},
+      source = #{source,jdbcType=VARCHAR},
+      update_content = #{updateContent,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.rongke.model.AppVersionInfo" >
+    update app_version_info
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      version_num = #{versionNum,jdbcType=VARCHAR},
+      ios_url = #{iosUrl,jdbcType=VARCHAR},
+      android_url = #{androidUrl,jdbcType=VARCHAR},
+      forced_updating = #{forcedUpdating,jdbcType=BIT},
+      source = #{source,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.ChannelMapper">
+
+
+    <resultMap type="com.rongke.model.Channel" id="rmChannel">
+        <id property="id" column="id" />
+        <result property="loginName" column="loginName"/>
+        <result property="name" column="name"/>
+        <result property="linkUrl" column="linkUrl"/>
+        <result property="proportion" column="proportion"/>
+        <result property="password" column="password"/>
+        <result property="token" column="token"/>
+        <result property="memberCount" column="memberCount"/>
+        <result property="applyMoney" column="applyMoney"/>
+        <result property="outMoney" column="outMoney"/>
+        <result property="profit" column="profit"/>
+        <result property="status" column="status"/>
+        <result property="decrementRate" column="decrementRate"/>
+
+    </resultMap>
+
+
+    <sql id="mChannelPkSql">
+        channel.id AS channel_id,
+        channel.login_name AS channel_loginName,
+        channel.name AS channel_name,
+        channel.link_url AS channel_linkUrl,
+        channel.proportion AS channel_proportion,
+        channel.password AS channel_password,
+        channel.token AS channel_token,
+        channel.member_count AS channel_memberCount,
+        channel.apply_money AS channel_applyMoney,
+        channel.out_money AS channel_outMoney,
+        channel.profit AS channel_profit,
+        channel.status AS channel_status
+
+    </sql>
+
+    <sql id="mChannelSql">
+        id AS id,
+        login_name AS loginName,
+        name AS name,
+        link_url AS linkUrl,
+        proportion AS proportion,
+        password AS password,
+        token AS token,
+        member_count AS memberCount,
+        apply_money AS applyMoney,
+        out_money AS outMoney,
+        profit AS profit,
+        status AS status,
+        decrement_rate AS decrementRate
+    </sql>
+
+    <select id="selectByCondition" parameterType="Channel" resultMap="rmChannel">
+        select
+        <include refid="mChannelSql"></include>
+        from channel
+        <where>
+            <if test="id!= null">
+                AND id=#{id}
+            </if>
+            <if test="loginName!= null">
+                AND login_name=#{loginName}
+            </if>
+            <if test="name!= null">
+                AND name=#{name}
+            </if>
+            <if test="linkUrl!= null">
+                AND link_url=#{linkUrl}
+            </if>
+            <if test="proportion!= null">
+                AND proportion=#{proportion}
+            </if>
+            <if test="password!= null">
+                AND password=#{password}
+            </if>
+            <if test="token!= null">
+                AND token=#{token}
+            </if>
+            <if test="memberCount!= null">
+                AND member_count=#{memberCount}
+            </if>
+            <if test="applyMoney!= null">
+                AND apply_money=#{applyMoney}
+            </if>
+            <if test="outMoney!= null">
+                AND out_money=#{outMoney}
+            </if>
+            <if test="profit!= null">
+                AND profit=#{profit}
+            </if>
+            <if test="status!= null">
+                AND status=#{status}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectLoanUserCount" parameterType="long" resultType="int">
+        select count(1) loan_user_count,t1.channel_id id from (
+                select u.id, u.channel_id
+                from  `user` u join loan_order lo on u.id =lo.user_id
+                where
+                lo.pass_time is not null
+                and u.channel_id=#{channelId}
+                GROUP BY u.id
+        ) t1
+    </select>
+
+    <select id="selectAll" resultMap="rmChannel">
+        select
+        <include refid="mChannelSql"></include>
+        from channel
+        where status = 1
+    </select>
+
+
+
+
+</mapper>

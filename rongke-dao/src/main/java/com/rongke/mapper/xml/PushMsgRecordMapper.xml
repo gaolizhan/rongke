@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.PushMsgRecordMapper">
+
+    <resultMap type="com.rongke.model.PushMsgRecord" id="mPushMsgRecord" autoMapping="true">
+    </resultMap>
+
+    <sql id="mColumnsSql">
+        id AS id,
+        user_id AS userId,
+        push_msg_id AS pushMsgId,
+        gmt_datetime AS gmtDatetime,
+        upt_datetime AS uptDatetime
+    </sql>
+
+    <select id="selectListByUser" parameterType="java.lang.Long" resultType="java.util.Map">
+        SELECT
+          push_msg_record.id AS id ,push_msg.title AS title ,push_msg.content AS content,push_msg_record.gmt_datetime AS time
+        FROM
+          push_msg_record
+        LEFT JOIN push_msg ON push_msg_record.push_msg_id = push_msg.id
+        WHERE
+          push_msg_record.user_id = #{userId}
+    </select>
+</mapper>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rongke.mapper.UserPhoneRecordMapper">
+
+    <resultMap type="com.rongke.model.UserPhoneRecord" id="mUserPhoneRecord" autoMapping="true">
+        <association property="user_id" javaType="com.rongke.model.User" autoMapping="true"/>
+    </resultMap>
+
+    <sql id="mColumnsSql">
+        id AS id,
+        belong_area AS belongArea,
+        called_times AS calledTimes,
+        conn_times AS connTimes,
+        call_times AS callTimes,
+        identify_info AS identifyInfo,
+        phone_no AS phoneNo,
+        user_id AS userId
+    </sql>
+
+    <insert id="saveCall" parameterType="java.util.List">
+        insert into user_phone_record (user_id,comm_fee,comm_mode,conn_times,phone_no,call_type,comm_plac,start_time) values
+        <foreach collection ="list" item="b" index= "index" separator =",">
+            (
+            #{b.userId},
+            #{b.commFee},
+            #{b.commMode},
+            #{b.connTimes},
+            #{b.phoneNo},
+            #{b.callType},
+            #{b.commPlac},
+            #{b.startTime}
+            )
+        </foreach>
+    </insert>
+</mapper>
